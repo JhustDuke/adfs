@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>About - Amen Divine Foundation School, Owerri</title>
+
+		<link
+			rel="stylesheet"
+			href="index.css" />
+
+		<style>
+			.section-title {
+				color: #001f4d;
+				margin-bottom: 1rem;
+				text-align: center;
+			}
+
+			.card-carousel img {
+				width: 100%;
+				height: 250px;
+				object-fit: cover;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Navbar -->
+		<nav
+			class="navbar navbar-expand-lg navbar-dark"
+			style="background-color: #001f4d">
+			<div class="container">
+				<a
+					class="navbar-brand"
+					href="#"
+					><b>ADFS</b> OWERRI</a
+				>
+				<button
+					class="navbar-toggler"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#navbarBasic">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div
+					class="collapse navbar-collapse"
+					id="navbarBasic">
+					<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+						<li class="nav-item"
+							><a
+								class="nav-link"
+								href="index.html"
+								>Home</a
+							></li
+						>
+						<li class="nav-item"
+							><a
+								class="nav-link active"
+								href="#"
+								>About</a
+							></li
+						>
+						<li class="nav-item"
+							><a
+								class="nav-link"
+								href="academics.html"
+								>Academics</a
+							></li
+						>
+						<li class="nav-item"
+							><a
+								class="nav-link"
+								href="contact.html"
+								>Contact</a
+							></li
+						>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<main class="container mt-5">
+			<h1 class="text-center">About Amen Divine Foundation School</h1>
+			<p class="text-center"
+				>Learn more about our history, mission, vision, and staff dedicated to
+				student growth.</p
+			>
+
+			<div class="row g-4 mt-4">
+				<div
+					class="col-md-4"
+					id="introCard"></div>
+				<div
+					class="col-md-4"
+					id="historyCard"></div>
+				<div
+					class="col-md-4"
+					id="missionCard" ></div>
+			</div>
+		</main>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+		<script>
+			const introImages = [
+				"../",
+				"https://picsum.photos/seed/about-intro2/600/400",
+			];
+
+			const historyImages = [
+				"https://picsum.photos/seed/history/600/400",
+				"https://picsum.photos/seed/history2/600/400",
+			];
+
+			const missionImages = [
+				"https://picsum.photos/seed/mission/600/400",
+				"https://picsum.photos/seed/mission2/600/400",
+			];
+
+			function buildCardCarousel(id, title, images) {
+				const items = images
+					.map(
+						(src, idx) => `
+			<div class="carousel-item ${idx === 0 ? "active" : ""}">
+				<img src="${src}" class="d-block w-100" alt="${title} Image ${idx + 1}">
+			</div>
+		`
+					)
+					.join("");
+
+				return `
+			<div class="card grey lighten-4 p-3 h-100">
+				<h5 class="section-title">${title}</h5>
+				<div id="${id}Carousel" class="carousel slide card-carousel" data-bs-ride="carousel">
+					<div class="carousel-inner">
+						${items}
+					</div>
+					<button class="carousel-control-prev" type="button" data-bs-target="#${id}Carousel" data-bs-slide="prev">
+						<span class="carousel-control-prev-icon"></span>
+					</button>
+					<button class="carousel-control-next" type="button" data-bs-target="#${id}Carousel" data-bs-slide="next">
+						<span class="carousel-control-next-icon"></span>
+					</button>
+				</div>
+			</div>
+		`;
+			}
+
+			// =============================
+			// Inject cards into DOM
+			// =============================
+			document.getElementById("introCard").innerHTML = buildCardCarousel(
+				"introCard",
+				"Introduction",
+				introImages
+			);
+			document.getElementById("historyCard").innerHTML = buildCardCarousel(
+				"historyCard",
+				"History",
+				historyImages
+			);
+			document.getElementById("missionCard").innerHTML = buildCardCarousel(
+				"missionCard",
+				"Mission / Vision",
+				missionImages
+			);
+		</script>
+	</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Academics - Amen Divine Foundation School, Owerri</title>
+		<link
+			rel="stylesheet"
+			href="index.css" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+			rel="stylesheet" />
+	</head>
+	<body>
+		<nav
+			class="navbar navbar-expand-lg navbar-dark"
+			style="background-color: #001f4d">
+			<div class="container">
+				<a
+					class="navbar-brand"
+					href="#"
+					><b>ADFS</b> OWERRI</a
+				>
+				<button
+					class="navbar-toggler"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#navbarBasic">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div
+					class="collapse navbar-collapse"
+					id="navbarBasic">
+					<ul class="navbar-nav ms-auto">
+						<li class="nav-item"
+							><a
+								class="nav-link"
+								href="index.html"
+								>Home</a
+							></li
+						>
+						<li class="nav-item"
+							><a
+								class="nav-link"
+								href="about.html"
+								>About</a
+							></li
+						>
+						<li class="nav-item"
+							><a
+								class="nav-link active"
+								href="#"
+								>Academics</a
+							></li
+						>
+						<li class="nav-item"
+							><a
+								class="nav-link"
+								href="contact.html"
+								>Contact</a
+							></li
+						>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<main class="container mt-5">
+			<h1>Academics at Amen Divine Foundation School</h1>
+			<p
+				>Our programs challenge students while encouraging creativity and
+				critical thinking.</p
+			>
+
+			<div class="row g-4 mt-4">
+				<!-- Science -->
+				<div class="col-md-6 d-flex">
+					<div class="card grey lighten-4 p-3 flex-fill d-flex flex-column">
+						<h5 class="text-primary">Science Department</h5>
+						<p class="text-primary"
+							>Physics, Chemistry, and Biology programs that build analytical
+							and experimental skills.</p
+						>
+						<img
+							id="scienceImg"
+							class="img-fluid rounded mt-2"
+							alt="Science" />
+					</div>
+				</div>
+
+				<!-- Arts -->
+				<div class="col-md-6 d-flex">
+					<div class="card grey lighten-4 p-3 flex-fill d-flex flex-column">
+						<h5 class="text-primary">Arts Department</h5>
+						<p class="text-primary"
+							>Literature, music, drama, and visual arts fostering creativity
+							and self-expression.</p
+						>
+						<img
+							id="artsImg"
+							class="img-fluid rounded mt-2"
+							alt="Arts" />
+					</div>
+				</div>
+
+				<!-- Mathematics -->
+				<div class="col-md-6 d-flex">
+					<div class="card grey lighten-4 p-3 flex-fill d-flex flex-column">
+						<h5 class="text-primary">Mathematics Department</h5>
+						<p class="text-primary"
+							>Strengthening logical reasoning and quantitative problem-solving
+							skills.</p
+						>
+						<img
+							id="mathImg"
+							class="img-fluid rounded mt-2"
+							alt="Mathematics" />
+					</div>
+				</div>
+
+				<!-- Extracurricular -->
+				<div class="col-md-6 d-flex">
+					<div class="card grey lighten-4 p-3 flex-fill d-flex flex-column">
+						<h5 class="text-primary">Extracurricular Activities</h5>
+						<p class="text-primary"
+							>Sports, clubs, leadership programs, music, and cultural
+							activities promoting teamwork and personal growth.</p
+						>
+						<div class="row g-2 mt-2">
+							<div class="col-6"
+								><img
+									id="extra1"
+									class="img-fluid rounded"
+									alt="Sports"
+							/></div>
+							<div class="col-6"
+								><img
+									id="extra2"
+									class="img-fluid rounded"
+									alt="Music"
+							/></div>
+							<div class="col-6"
+								><img
+									id="extra3"
+									class="img-fluid rounded"
+									alt="Clubs"
+							/></div>
+							<div class="col-6"
+								><img
+									src="../images/practical.jpeg"
+									id="extra4"
+									class="img-fluid rounded"
+									alt="Leadership"
+							/></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<script>
+			const images = {
+				scienceImg: [
+					"../images/practical.jpeg",
+					"../images/practical1.jpg",
+					"../images/practical2.jpg",
+				],
+				artsImg: [
+					"https://picsum.photos/seed/arts1/600/400",
+					"https://picsum.photos/seed/arts2/600/400",
+					"https://picsum.photos/seed/arts3/600/400",
+				],
+				mathImg: [
+					"https://picsum.photos/seed/maths1/600/400",
+					"https://picsum.photos/seed/maths2/600/400",
+					"https://picsum.photos/seed/maths3/600/400",
+				],
+				extra1: ["../images/party1.jpeg", "../images/party2.jpeg"],
+				extra2: [
+					"https://picsum.photos/seed/music1/400/300",
+					"https://picsum.photos/seed/music2/400/300",
+					"https://picsum.photos/seed/music3/400/300",
+				],
+				extra3: [
+					"https://picsum.photos/seed/club1/400/300",
+					"https://picsum.photos/seed/club2/400/300",
+					"https://picsum.photos/seed/club3/400/300",
+				],
+				extra4: [
+					"https://picsum.photos/seed/leadership1/400/300",
+					"https://picsum.photos/seed/leadership2/400/300",
+					"https://picsum.photos/seed/leadership3/400/300",
+				],
+			};
+
+			const indexes = {
+				scienceImg: 0,
+				artsImg: 0,
+				mathImg: 0,
+				extra1: 0,
+				extra2: 0,
+				extra3: 0,
+				extra4: 0,
+			};
+
+			function rotate() {
+				for (let id in images) {
+					const el = document.getElementById(id);
+					el.src = images[id][indexes[id]];
+					indexes[id] = (indexes[id] + 1) % images[id].length;
+				}
+			}
+
+			// Initial load + every 3 seconds
+			rotate();
+			setInterval(rotate, 3000);
+		</script>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	</body>
+</html>
