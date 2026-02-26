@@ -1,0 +1,27 @@
+{
+	"name": "adfs-site",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro"
+	},
+	"dependencies": {
+		"astro": "^5.17.1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/JhustDuke/adfs.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "commonjs",
+	"bugs": {
+		"url": "https://github.com/JhustDuke/adfs/issues"
+	},
+	"homepage": "https://github.com/JhustDuke/adfs#readme"
+}
