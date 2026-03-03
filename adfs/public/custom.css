@@ -1,0 +1,59 @@
+/* ===================================================== */
+/* BRAND GRADIENT TEXT                                   */
+/* Used for Welcome Heading                               */
+/* ===================================================== */
+
+.brand-gradient-text {
+	background: linear-gradient(
+		90deg,
+		#000000 0%,
+		#000000 10%,
+		#0d47a1 20%,
+		#ff9800 35%,
+		#f3d785 55%,
+		#1a237e 75%,
+		#000000 90%,
+		#000000 100%
+	);
+
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+/* ===================================================== */
+/* GRADIENT BUTTON                                       */
+/* Strong Orange + Navy Emphasis                          */
+/* Text stays orange                                      */
+/* ===================================================== */
+
+.brand-gradient-btn {
+	background: linear-gradient(
+		90deg,
+		#1a237e 0%,
+		/* Navy */ #1a237e 25%,
+
+		#ff9800 40%,
+		/* Orange */ #ff9800 75%,
+
+		#1a237e 100% /* Navy again */
+	);
+
+	color: #ff9800; /* Button text is orange */
+	border: none;
+}
+
+/* Button Hover Effect */
+.brand-gradient-btn:hover {
+	opacity: 0.9;
+	transform: scale(1.03);
+	transition: 0.2s ease-in-out;
+}
+
+/* ===================================================== */
+/* OPTIONAL: Make Buttons Feel More Solid                 */
+/* Remove default Bootstrap shadow if needed              */
+/* ===================================================== */
+
+.brand-gradient-btn:focus {
+	box-shadow: none;
+}

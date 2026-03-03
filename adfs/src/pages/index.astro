@@ -1,10 +1,107 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Card from "../layouts/cardLayout.astro";
+import Hero from "../layouts/hero.astro";
 ---
 
 <BaseLayout title="Home">
-	<div class="text-center">
-		<h1 class="fw-bold">Welcome</h1>
-		<p>Content goes here inside the slot.</p>
-	</div>
+
+  <!-- ===================================================== -->
+  <!-- HERO HEADING                                          -->
+  <!-- Brand Gradient Header                                 -->
+  <!-- ===================================================== -->
+
+  <div class="container text-center my-4">
+
+    <h1
+      class="text-uppercase fw-bold"
+      style="
+        background: linear-gradient(
+          90deg,
+
+          /* Black Start */
+          #000000 0%,
+          #000000 10%,
+
+          /* Dominant Brand Colors */
+          #0d47a1 20%,
+          #ff9800 35%,
+          #f3d785 55%,
+          #1a237e 75%,
+
+          /* Black End */
+          #000000 90%,
+          #000000 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      "
+    >
+      Welcome to Amen Divine Foundation Schools
+    </h1>
+
+    <Hero/>
+
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- HOME NAVIGATION CARDS                                 -->
+  <!-- ===================================================== -->
+
+  <div class="container py-3">
+    <div class="row g-4">
+
+      <!-- About -->
+      <div class="col-sm-12 col-md-4">
+        <Card
+          title="About"
+          href="/about"
+          image="https://picsum.photos/600/400?random=1"
+          content="Learn about our history, mission, vision, core values, and the leadership team guiding Amen Divine Foundation Schools toward excellence."
+        />
+      </div>
+
+      <!-- Academics -->
+      <div class="col-sm-12 col-md-4">
+        <Card
+          title="Academics"
+          href="/academics"
+          image="https://picsum.photos/600/400?random=2"
+          content="Explore our curriculum, academic programs, subject offerings, and our commitment to nurturing excellence from early years through senior classes."
+        />
+      </div>
+
+      <!-- Gallery -->
+      <div class="col-sm-12 col-md-4">
+        <Card
+          title="Gallery"
+          href="/gallery"
+          image="https://picsum.photos/600/400?random=3"
+          content="View photos of school events, classrooms, facilities, cultural days, award ceremonies, and memorable moments from our vibrant school life."
+        />
+      </div>
+
+      <!-- Contact -->
+      <div class="col-sm-12 col-md-4">
+        <Card
+          title="Contact"
+          href="/contact"
+          image="https://picsum.photos/600/400?random=4"
+          content="Find our location, contact details, office hours, and directions to visit the school or make inquiries about admissions and enrollment."
+        />
+      </div>
+
+      <!-- News -->
+      <div class="col-sm-12 col-md-4">
+        <Card
+          title="News"
+          href="/news"
+          image="https://picsum.photos/600/400?random=5"
+          content="Stay updated with announcements, upcoming events, academic calendars, competitions, achievements, and important school notices."
+        />
+      </div>
+
+    </div>
+  </div>
+
 </BaseLayout>

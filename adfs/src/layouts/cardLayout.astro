@@ -1,0 +1,71 @@
+---
+interface Props {
+  title: string
+  href: string
+  content: string
+
+  // Image is compulsory
+  image: string
+
+  // Background color for the card
+  bgColor?: string
+
+  // Button color
+  btnClass?: string
+}
+
+const {
+  title,
+  href,
+  content,
+  image,
+  bgColor = "grey lighten-2",
+  btnClass = "orange darken-3"
+} = Astro.props
+---
+
+<!-- ================================ -->
+<!-- Card Component                   -->
+<!-- Image Required                   -->
+<!-- Centered Button                  -->
+<!-- ================================ -->
+
+<div class={`card h-100 shadow-sm ${bgColor}`}>
+
+  <!-- Image -->
+  <img
+    src={image}
+    alt={title}
+    class="card-img-top"
+    style="height:200px; object-fit:cover;"
+    loading="lazy"
+  />
+
+  <div class="card-body d-flex flex-column">
+
+    <!-- Title -->
+    <h5 class="card-title fw-bold">
+      {title}
+    </h5>
+
+    <!-- Content -->
+    <p class="card-text flex-grow-1">
+      {content}
+    </p>
+
+    <!-- Button Wrapper -->
+    <div class="mt-auto d-flex justify-content-center">
+
+      <a
+        href={href}
+        class={`btn ${btnClass} white-text d-inline-flex align-items-center gap-2`}
+      >
+        Visit Page
+        <i class="fa fa-external-link"></i>
+      </a>
+
+    </div>
+
+  </div>
+
+</div>

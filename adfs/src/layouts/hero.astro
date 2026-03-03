@@ -1,0 +1,48 @@
+---
+/* =============================================== */
+/* HERO / JUMBOTRON COMPONENT                      */
+/* Reusable School Hero Section                     */
+/* =============================================== */
+
+const {
+  title = "Welcome",
+  subtitle = "Inspiring Excellence Every Day",
+  image = "https://picsum.photos/1600/900"
+} = Astro.props;
+---
+
+<div
+  class="container-fluid px-0"
+>
+
+  <div
+    class="position-relative text-white text-center d-flex align-items-center justify-content-center"
+    style={`
+      height: 400px;
+      background-image: url('${image}');
+      background-size: cover;
+      background-position: center;
+    `}
+  >
+
+    <!-- Dark Overlay -->
+    <div
+      style="
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+      "
+    >
+    </div>
+
+    <!-- Content -->
+    <div class="position-relative px-3">
+      <h2 class="fw-bold">{title}</h2>
+      <p class="lead">
+        {subtitle}
+      </p>
+    </div>
+
+  </div>
+
+</div>
