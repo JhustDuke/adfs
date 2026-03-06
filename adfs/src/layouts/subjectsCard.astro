@@ -1,0 +1,72 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  icon: string;
+  imageSrc: string;
+  gallerySlug: string; // The ID on the gallery page (e.g., 'science')
+  colorClass?: string;
+}
+
+const { title, description, icon, imageSrc, gallerySlug, colorClass = "indigo-text" } = Astro.props;
+---
+
+<div class="col-12 col-md-6 col-lg-3 mb-4">
+  <div class="card h-100 border-0 shadow-sm hover-lift overflow-hidden">
+    <a href={`/gallery#${gallerySlug}`} class="d-block position-relative overflow-hidden" title={`View ${title} Gallery`}>
+      <img 
+        src={imageSrc} 
+        class="card-img-top object-fit-cover" 
+        alt={title} 
+        style="height: 200px; transition: transform 0.5s ease;"
+      />
+      <div class="gallery-overlay d-flex align-items-center justify-content-center">
+        <span class="text-white fw-bold"><i class="bi bi-images me-2"></i>VIEW GALLERY</span>
+      </div>
+      
+      <div class="position-absolute top-0 start-0 m-3">
+        <span class="badge bg-white text-dark shadow-sm p-2">
+          <i class={`bi ${icon} ${colorClass} fs-5`}></i>
+        </span>
+      </div>
+    </a>
+    
+    <div class="card-body text-center">
+      <h3 class={`h5 fw-bold ${colorClass}`}>{title}</h3>
+      <p class="small text-muted mb-0">
+        {description}
+      </p>
+    </div>
+    
+    <div class="card-footer bg-transparent border-0 pb-4 text-center">
+      <a href={`/gallery#${gallerySlug}`} class={`btn btn-sm fw-bold ${colorClass} text-decoration-none`}>
+        SEE PHOTOS <i class="bi bi-arrow-right-short"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,0.1) !important;
+  }
+  .hover-lift:hover img {
+    transform: scale(1.1);
+  }
+
+  /* Gallery Overlay Effect */
+  .gallery-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .card:hover .gallery-overlay {
+    opacity: 1;
+  }
+</style>

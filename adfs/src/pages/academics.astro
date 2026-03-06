@@ -1,10 +1,76 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import SubjectCard from "../layouts/subjectsCard.astro";
+
+// Data for the four pillars
+const academicPillars = [
+  {
+    title: "Creative Arts",
+    icon: "bi-palette",
+    imageSrc: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600",
+    gallerySlug: "arts-gallery",
+    description: "Nurturing expression through fine arts, music, and performance.",
+    colorClass: "pink-text text-darken-2"
+  },
+  {
+    title: "Science & Discovery",
+    icon: "bi-microscope",
+    imageSrc: "https://images.unsplash.com/photo-1530210124550-912dc1381cb8?w=600",
+    gallerySlug: "science-gallery",
+    description: "Hands-on exploration of the natural world in our modern labs.",
+    colorClass: "green-text text-darken-3"
+  },
+  {
+    title: "ICT & Robotics",
+    icon: "bi-cpu",
+    imageSrc: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=600",
+    gallerySlug: "ict-gallery",
+    description: "Preparing pupils for a digital future with coding and literacy.",
+    colorClass: "blue-text text-darken-4"
+  },
+  {
+    title: "Extracurricular",
+    icon: "bi-trophy",
+    imageSrc: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=600",
+    gallerySlug: "sports-gallery",
+    description: "Building teamwork and leadership through sports and clubs.",
+    colorClass: "orange-text text-darken-4"
+  }
+];
 ---
 
-<BaseLayout title="Academics">
-	<div class="text-center">
-		<h1 class="fw-bold">Welcome</h1>
-		<p>Content goes here inside the slot.</p>
-	</div>
+<BaseLayout title="Academics | Our Curriculum">
+  <div class="container my-5">
+    <div class="row mb-5 text-center">
+      <div class="col-12">
+        <h1 class="display-4 fw-bold indigo-text text-darken-4">Our Academic Pillars</h1>
+        <p class="lead grey-text text-darken-2 mx-auto" style="max-width: 800px;">
+          We provide a holistic learning experience designed to ignite curiosity and foster excellence in every pupil.
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      {academicPillars.map((item) => (
+        <SubjectCard 
+          title={item.title}
+          icon={item.icon}
+          imageSrc={item.imageSrc}
+          gallerySlug={item.gallerySlug}
+          description={item.description}
+          colorClass={item.colorClass}
+        />
+      ))}
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-12 text-center p-5 bg-light rounded-4 shadow-sm border">
+        <h2 class="fw-bold indigo-text text-darken-3">Want to see our students in action?</h2>
+        <p class="mb-4">Visit our full gallery to see highlights from all our departments.</p>
+        <a href="/gallery" class="btn btn-primary btn-lg rounded-pill px-5 shadow">
+          Explore Full Gallery
+        </a>
+      </div>
+    </div>
+  </div>
 </BaseLayout>
