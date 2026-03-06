@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Card from "../layouts/cardLayout.astro";
 import Hero from "../layouts/hero.astro";
+import Welcome from "../layouts/welcomeHeader.astro";
 ---
 
 <BaseLayout title="Home">
@@ -13,32 +14,7 @@ import Hero from "../layouts/hero.astro";
 
   <div class="container text-center my-4">
 
-    <h1
-      class="text-uppercase fw-bold"
-      style="
-        background: linear-gradient(
-          90deg,
-
-          /* Black Start */
-          #000000 0%,
-          #000000 10%,
-
-          /* Dominant Brand Colors */
-          #0d47a1 20%,
-          #ff9800 35%,
-          #f3d785 55%,
-          #1a237e 75%,
-
-          /* Black End */
-          #000000 90%,
-          #000000 100%
-        );
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      "
-    >
-      Welcome to Amen Divine Foundation Schools
-    </h1>
+    <Welcome/>
 
     <Hero/>
 

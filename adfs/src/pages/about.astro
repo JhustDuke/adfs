@@ -1,10 +1,76 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Card from "../layouts/aboutCard.astro";
+import StaffsCarousel from "../layouts/staffCarousel.astro";
+
+// Define the staff data array
+const schoolStaff = [
+  { 
+			src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200", 
+    caption: "Mrs. Clara Higgins", 
+    subCaption: "Head of Primary Education" 
+  },
+  { 
+   src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200", 
+    caption: "Mr. Julian Vance", 
+    subCaption: "Senior Literacy Lead" 
+  },
+  { 
+    src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200", 
+    caption: "Ms. Amara Okafor", 
+    subCaption: "Pupil Welfare Coordinator" 
+  },
+  { 
+    src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200", 
+    caption: "Ms. Amara Okafor", 
+    subCaption: "Pupil Welfare Coordinator" 
+  }
+];
 ---
 
-<BaseLayout title="About Us">
-	<div class="text-center">
-		<h1 class="fw-bold">Welcome</h1>
-		<p>Content goes here inside the slot.</p>
-	</div>
+<BaseLayout title="About Our School">
+  <div class="container my-5">
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h1 class="display-4 fw-bold indigo-text text-darken-4">Nurturing Young Minds</h1>
+        <p class="lead grey-text text-darken-2">
+          Providing a foundation of excellence for every pupil in our care.
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <Card 
+        title="Our Vision" 
+        textContent="To be a beacon of primary education where every pupil feels inspired to explore their potential. We envision a future where our young learners transition to the next stage of life as confident, empathetic, and curious individuals, equipped with the resilience to thrive in an ever-changing world."
+        imageSrc="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=600&q=80"
+        bgColor="blue lighten-5"
+      />
+      
+      <Card 
+        title="Our Mission" 
+        textContent="Our mission is to provide a safe, inclusive, and stimulating environment that fosters a love for learning. We are dedicated to delivering a balanced curriculum that prioritizes the holistic development of our pupils—academically, socially, and emotionally—while celebrating the unique talents of every child."
+        imageSrc="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80"
+        bgColor="teal lighten-5"
+      />
+
+      <Card 
+        title="Core Values" 
+        textContent="At the heart of our school are the values of Kindness, Integrity, and Growth. We teach our pupils the importance of respect for others, the courage to be honest, and the joy of continuous improvement. Through collaborative play and structured learning, we build a community of lifelong learners."
+        imageSrc="https://images.unsplash.com/photo-1544365313-094ba92415be?auto=format&fit=crop&w=600&q=80"
+        bgColor="amber lighten-5"
+      />
+    </div>
+
+    <div class="row mt-5 pt-4">
+      <div class="col-12 text-center mb-4">
+        <h2 class="fw-bold indigo-text text-darken-4">Meet Our Dedicated Staff</h2>
+        <hr class="mx-auto" style="width: 50px; height: 3px; background: #1a237e;">
+      </div>
+      <div class="col-12">
+        <StaffsCarousel staffs={schoolStaff} />
+      </div>
+    </div>
+
+  </div>
 </BaseLayout>
