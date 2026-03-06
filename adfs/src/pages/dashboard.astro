@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Dashboard from "../components/dashboard.vue";
+---
+
+<BaseLayout title="Dashboard">
+ <h4 class='text-uppercase p-2 my-1'>manage <span class="fw-bold">ADFS sites'</span> content here</h4>
+ <Dashboard client:load />
+</BaseLayout>
