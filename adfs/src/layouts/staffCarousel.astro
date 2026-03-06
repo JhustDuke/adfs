@@ -13,70 +13,74 @@ interface Props {
 const { staffs, id = "staffCarousel" } = Astro.props;
 ---
 
-<div id={id} class="carousel slide shadow rounded mt-5" data-bs-ride="carousel">
+<div class="d-flex justify-content-center mt-5 ">
+  <div style="max-width:600px; width:100%;">
 
-  <!-- Indicators -->
-  <div class="carousel-indicators">
-    {staffs.map(function (_, index) {
-      return (
-        <button
-          type="button"
-          data-bs-target={`#${id}`}
-          data-bs-slide-to={index}
-          class={index === 0 ? "active" : ""}
-          aria-current={index === 0 ? "true" : "false"}
-          aria-label={`Slide ${index + 1}`}
-        ></button>
-      );
-    })}
+    <div id={id} class="carousel slide p-2 grey lighten-2 shadow rounded" data-bs-ride="carousel">
+
+      <!-- Indicators -->
+      <div class="carousel-indicators">
+        {staffs.map(function (_, index) {
+          return (
+            <button
+              type="button"
+              data-bs-target={`#${id}`}
+              data-bs-slide-to={index}
+              class={index === 0 ? "active" : ""}
+              aria-current={index === 0 ? "true" : "false"}
+              aria-label={`Slide ${index + 1}`}
+            ></button>
+          );
+        })}
+      </div>
+
+      <!-- Slides -->
+      <div class="carousel-inner">
+        {staffs.map(function (member, index) {
+          return (
+            <div class={`carousel-item ${index === 0 ? "active" : ""}`}>
+
+              <img
+                src={member.src}
+                class="d-block mx-auto rounded-4"
+                alt={member.caption}
+                style="height:400px; max-width:600px; width:100%; object-fit:contain;"
+              />
+
+              <div class="carousel-caption d-md-block bg-dark bg-opacity-50  p-3">
+                <h5>{member.caption}</h5>
+
+                {member.subCaption && (
+                  <p>{member.subCaption}</p>
+                )}
+
+              </div>
+
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- Controls -->
+      <button
+        class="carousel-control-prev black"
+        type="button"
+        data-bs-target={`#${id}`}
+        data-bs-slide="prev"
+      >
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+
+      <button
+        class="carousel-control-next black"
+        type="button"
+        data-bs-target={`#${id}`}
+        data-bs-slide="next"
+      >
+        <span class="carousel-control-next-icon"></span>
+      </button>
+
+    </div>
+
   </div>
-
-  <!-- Slides -->
-  <div class="carousel-inner">
-    {staffs.map(function (member, index) {
-      return (
-        <div class={`carousel-item ${index === 0 ? "active" : ""}`}>
-
-          <img
-            src={member.src}
-            class="d-block w-100"
-            alt={member.caption}
-            style="height:400px; object-fit:cover;"
-          />
-
-          <div class="carousel-caption d-md-block bg-dark bg-opacity-50 rounded p-3">
-            <h5>{member.caption}</h5>
-
-            {member.subCaption && (
-              <p>{member.subCaption}</p>
-            )}
-
-          </div>
-
-        </div>
-      );
-    })}
-  </div>
-
-  <!-- Controls -->
-  <button
-    class="carousel-control-prev"
-    type="button"
-    data-bs-target={`#${id}`}
-    data-bs-slide="prev"
-  >
-    <span class="carousel-control-prev-icon"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-
-  <button
-    class="carousel-control-next"
-    type="button"
-    data-bs-target={`#${id}`}
-    data-bs-slide="next"
-  >
-    <span class="carousel-control-next-icon"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-
 </div>

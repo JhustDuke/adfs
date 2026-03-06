@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Form from "../components/login.vue";
+---
+
+<BaseLayout title="ADFS portal">
+ <h4 class='text-uppercase p-2 my-1'><span class="fw-bold">ADFS sites'</span> Login Portal</h4>
+ <Form client:load />
+</BaseLayout>
