@@ -1,0 +1,79 @@
+---
+interface Props {
+  title: string;
+  date: string;
+  excerpt: string;
+  fullText: string;
+  category?: string;
+  bgColor?: string;
+  badgeColor?: string;
+}
+
+const { 
+  title, 
+  date, 
+  excerpt, 
+  fullText, 
+  category = "Announcement", 
+  bgColor = "white",
+  badgeColor = "blue darken-3" 
+} = Astro.props;
+
+const newsId = `news-${Math.random().toString(36).substring(2, 7)}`;
+---
+
+<div class="col-12 mb-4" id={newsId}>
+  <div class={`card shadow-sm border-0 ${bgColor} rounded-3`}>
+    <div class="card-body p-4">
+      
+      <div class="mb-3">
+        <span class={`badge ${badgeColor} text-white mb-2 p-2 px-3 rounded-pill`}>
+          {category}
+        </span>
+        <h2 class="h4 fw-bold mb-1 indigo-text text-darken-4">{title}</h2>
+        <small class="text-muted d-block mt-1">
+          <i class="bi bi-clock me-1"></i> Posted on {date}
+        </small>
+      </div>
+
+      <div class="news-body">
+        <p class="excerpt-text grey-text text-darken-3 mb-0">
+          {excerpt}
+        </p>
+        
+        <div class="full-content d-none mt-3 pt-3 border-top">
+          <div class="grey-text text-darken-4" style="line-height: 1.6;">
+            {fullText}
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <button class="toggle-news btn btn-link p-0 fw-bold blue-text text-darken-2 text-decoration-none">
+          READ MORE
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ newsId }}>
+  const wrapper = document.getElementById(newsId);
+  const btn = wrapper?.querySelector('.toggle-news');
+  const fullContent = wrapper?.querySelector('.full-content');
+  const excerpt = wrapper?.querySelector('.excerpt-text');
+
+  btn?.addEventListener('click', () => {
+    const isExpanded = fullContent.classList.toggle('d-none');
+    
+    // Toggle button text
+    btn.textContent = isExpanded ? 'READ MORE' : 'SHOW LESS';
+    
+    // Optional: toggle excerpt visibility for a cleaner look when expanded
+    if (!isExpanded) {
+        excerpt.classList.add('text-muted', 'small');
+    } else {
+        excerpt.classList.remove('text-muted', 'small');
+    }
+  });
+</script>

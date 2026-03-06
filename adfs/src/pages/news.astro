@@ -1,10 +1,48 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import NewsCard from "../layouts/newsCard.astro";
 ---
 
-<BaseLayout title="News">
-	<div class="text-center">
-		<h1 class="fw-bold">Welcome</h1>
-		<p>Content goes here inside the slot.</p>
-	</div>
+<BaseLayout title="School News & Updates">
+  <div class="container my-5">
+    <div class="row mb-5 text-center">
+      <div class="col-12">
+        <h1 class="display-4 fw-bold indigo-text text-darken-4">Pupil News & Notices</h1>
+        <p class="lead grey-text text-darken-2">Everything parents and pupils need to know about school life.</p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        
+        <NewsCard 
+          title="Important: Early Closure Next Friday"
+          date="March 10, 2026"
+          category="Urgent"
+          badgeColor="red darken-4"
+          bgColor="red lighten-5"
+          excerpt="Please be advised that all pupils will be dismissed at 12:30 PM next Friday for staff development."
+          fullText="Staff will be participating in a mandatory curriculum workshop. Lunch will be served earlier than usual, and all school buses will depart at 12:45 PM. We kindly ask parents to make necessary pick-up arrangements."
+        />
+
+        <NewsCard 
+          title="Annual Cultural Day Celebration"
+          date="March 05, 2026"
+          category="Event"
+          badgeColor="green darken-3"
+          bgColor="green lighten-5"
+          excerpt="Celebrating our diversity through food, dance, and traditional attire!"
+          fullText="This year's Cultural Day will feature performances from all year groups. Pupils are encouraged to come dressed in their traditional ethnic wear. Food stalls will be available for parents to sample various local delicacies."
+        />
+
+        <NewsCard 
+          title="New Library Books Collection"
+          date="February 28, 2026"
+          excerpt="Our library has just received over 200 new titles for our young readers."
+          fullText="The new collection includes science adventure series, local folk tales, and interactive picture books. Pupils can begin borrowing the new titles starting next Monday. Happy reading!"
+        />
+
+      </div>
+    </div>
+  </div>
 </BaseLayout>
