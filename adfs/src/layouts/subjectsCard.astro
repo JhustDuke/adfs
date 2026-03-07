@@ -1,19 +1,11 @@
 ---
-interface Props {
-  title: string;
-  description: string;
-  icon: string;
-  imageSrc: string;
-  gallerySlug: string; // The ID on the gallery page (e.g., 'science')
-  colorClass?: string;
-}
-
-const { title, description, icon, imageSrc, gallerySlug, colorClass = "indigo-text" } = Astro.props;
+import type {subjectCardInterface} from '../interfaces'
+const { title, description, icon, imageSrc, galleryCaption, colorClass = "indigo-text" } = Astro.props as subjectCardInterface
 ---
 
 <div class="col-12 col-md-6 col-lg-3 mb-4">
   <div class="card h-100 border-0 shadow-sm hover-lift overflow-hidden">
-    <a href={`/gallery#${gallerySlug}`} class="d-block position-relative overflow-hidden" title={`View ${title} Gallery`}>
+    <a href={`/gallery#${galleryCaption}`} class="d-block position-relative overflow-hidden" title={`View ${title} Gallery`}>
       <img 
         src={imageSrc} 
         class="card-img-top object-fit-cover" 
@@ -39,7 +31,7 @@ const { title, description, icon, imageSrc, gallerySlug, colorClass = "indigo-te
     </div>
     
     <div class="card-footer bg-transparent border-0 pb-4 text-center">
-      <a href={`/gallery#${gallerySlug}`} class={`btn btn-sm fw-bold ${colorClass} text-decoration-none`}>
+      <a href={`/gallery#${galleryCaption}`} class={`btn btn-sm fw-bold ${colorClass} text-decoration-none`}>
         SEE PHOTOS <i class="bi bi-arrow-right-short"></i>
       </a>
     </div>

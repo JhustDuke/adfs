@@ -1,16 +1,8 @@
 ---
-interface StaffMember {
-  src: string;
-  caption: string;
-  subCaption?: string;
-}
+import type {staffCarouselInterface} from '../interfaces'
 
-interface Props {
-  staffs: StaffMember[];
-  id?: string;
-}
 
-const { staffs, id = "staffCarousel" } = Astro.props;
+const { AllStaffMembers, id = "staffCarousel" } = Astro.props as staffCarouselInterface
 ---
 
 <div class="d-flex justify-content-center mt-5 ">
@@ -20,7 +12,7 @@ const { staffs, id = "staffCarousel" } = Astro.props;
 
       <!-- Indicators -->
       <div class="carousel-indicators">
-        {staffs.map(function (_, index) {
+        {AllStaffMembers.map(function (_, index) {
           return (
             <button
               type="button"
@@ -36,12 +28,12 @@ const { staffs, id = "staffCarousel" } = Astro.props;
 
       <!-- Slides -->
       <div class="carousel-inner">
-        {staffs.map(function (member, index) {
+        {AllStaffMembers.map(function (member, index) {
           return (
             <div class={`carousel-item ${index === 0 ? "active" : ""}`}>
 
               <img
-                src={member.src}
+                src={member.imgSrc}
                 class="d-block mx-auto rounded-4"
                 alt={member.caption}
                 style="height:400px; max-width:600px; width:100%; object-fit:contain;"

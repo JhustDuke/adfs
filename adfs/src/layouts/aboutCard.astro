@@ -1,13 +1,5 @@
 ---
-interface Props {
-  title: string;
-  textContent: string;
-  imageSrc: string;
-  // Defaulting to empty strings or standard classes so you can override them
-  bgColor?: string;   
-  textColor?: string; 
-  btnColor?: string;  
-}
+import type { AboutSectionCardProps } from "../interfaces";
 
 // "white" and "black-text" are the defaults if you don't pass anything
 const { 
@@ -17,7 +9,7 @@ const {
   bgColor = "white", 
   textColor = "black-text",
   btnColor = "blue-text" 
-} = Astro.props;
+} = Astro.props as AboutSectionCardProps
 
 const cardId = `card-${Math.random().toString(36).substring(2, 7)}`;
 ---

@@ -1,18 +1,5 @@
 ---
-interface Props {
-  title: string
-  href: string
-  content: string
-
-  // Image is compulsory
-  image: string
-
-  // Background color for the card
-  bgColor?: string
-
-  // Button color
-  btnClass?: string
-}
+import type {cardLayoutInterface} from '../interfaces'
 
 const {
   title,
@@ -21,7 +8,7 @@ const {
   image,
   bgColor = "grey lighten-2",
   btnClass = "orange darken-3"
-} = Astro.props
+} = Astro.props as cardLayoutInterface
 ---
 
 <!-- ================================ -->

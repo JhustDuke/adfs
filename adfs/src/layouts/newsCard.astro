@@ -1,13 +1,5 @@
 ---
-interface Props {
-  title: string;
-  date: string;
-  excerpt: string;
-  fullText: string;
-  category?: string;
-  bgColor?: string;
-  badgeColor?: string;
-}
+import type {newsCardInterface} from '../interfaces'
 
 const { 
   title, 
@@ -17,7 +9,7 @@ const {
   category = "Announcement", 
   bgColor = "white",
   badgeColor = "blue darken-3" 
-} = Astro.props;
+} = Astro.props as newsCardInterface
 
 const newsId = `news-${Math.random().toString(36).substring(2, 7)}`;
 ---
