@@ -2,9 +2,7 @@
 	<!-- MAIN DASHBOARD LAYOUT -->
 	<div class="container-fluid py-4">
 		<div class="row g-4">
-			<!-- ==============================
-			SIDEBAR
-			============================== -->
+			<!-- aside bar for md screens -->
 			<aside class="col-12 col-lg-3">
 				<!-- MOBILE SELECT -->
 				<div class="d-lg-none mb-3">
@@ -50,10 +48,7 @@
 					<div
 						class="card-body p-2"
 						style="height: 400px; overflow-y: scroll">
-						<!--
-						DYNAMIC COMPONENT
-						loads the manager responsible for the selected tab
-						-->
+						<!-- dynamic mounted components -->
 						<keep-alive>
 							<component :is="currentComponent"></component>
 						</keep-alive>
@@ -67,25 +62,9 @@
 <script setup>
 	import { ref, computed } from "vue";
 
-	/* =========================================================
-MANAGER COMPONENTS
-each component manages its own CRUD logic
-========================================================= */
-
 	import NewsManager from "./newsManager/newsManager.vue";
 	import AcademicsManager from "./academicPageManager/academicManager.vue";
 	import GalleryManager from "./galleryPageManager/galleryManager.vue";
-
-	/* =========================================================
-DASHBOARD STATE
-========================================================= */
-
-	const activeTab = ref("news");
-
-	/* =========================================================
-TAB CONFIGURATION
-drives the sidebar navigation
-========================================================= */
 
 	const tabs = [
 		{ id: "news", label: "News page" },
@@ -93,34 +72,27 @@ drives the sidebar navigation
 		{ id: "gallery", label: "Gallery page" },
 	];
 
-	/* =========================================================
-COMPONENT MAP
-maps tab id → manager component
-========================================================= */
+	//news is selected as the active component
+	const activeTab = ref("news");
 
+	//all the mountable components on the dashboard
 	const componentMap = {
 		news: NewsManager,
 		academics: AcademicsManager,
 		gallery: GalleryManager,
 	};
 
-	/* =========================================================
-EVENT HANDLERS
-========================================================= */
-
-	const handleTabChange = function (event) {
-		activeTab.value = event.target.value;
-	};
-
 	const setActiveTab = function (tabId) {
 		activeTab.value = tabId;
 	};
 
-	/* =========================================================
-COMPUTED COMPONENT SWITCHER
-========================================================= */
-
+	//this code auto switches component based on the activeTabValue
 	const currentComponent = computed(function () {
 		return componentMap[activeTab.value];
 	});
+
+	//this would only work for mobile screens select
+	const handleTabChange = function (event) {
+		activeTab.value = event.target.value;
+	};
 </script>
