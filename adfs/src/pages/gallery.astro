@@ -14,8 +14,15 @@ const artsPhotos = [
 ];
 
 const ictPhotos = [
-  { src: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800", caption: "Introduction to Scratch Coding" },
-  { src: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800", caption: "Digital Literacy Class" }
+  { src: "/images/SB-Kingsley.jpg", caption: "Designing and lock-in" },
+  { src: "/images/SB-promise.jpg", caption: "Designing" },
+  { src: "/images/SB-victor.jpg", caption: "Designing" },
+  { src: "/images/SB-simdi.jpg", caption: "Designing" },
+  { src: "/images/SB-result1.jpg", caption: "outcome" },
+  { src: "/images/SB-result2.jpg", caption: "outcome" },
+  { src: "/images/SB-result3.jpg", caption: "outcome" },
+  { src: "/images/SB-result4.jpg", caption: "outcome" },
+  
 ];
 
 const extraPhotos = [
@@ -32,6 +39,16 @@ const extraPhotos = [
     </div>
 
     <div class="row g-4">
+
+
+      <GalleryCard 
+      folderId="ICT" 
+      title="SPONGEBOB IN 15mins" 
+      date="June 2025" 
+      images={ictPhotos} 
+    />
+
+
       <GalleryCard 
         folderId="science-gallery" 
         title="Science Lab Highlights" 
@@ -46,13 +63,7 @@ const extraPhotos = [
         images={artsPhotos} 
       />
 
-      <GalleryCard 
-        folderId="ict-gallery" 
-        title="ICT & Robotics Center" 
-        date="January 2026" 
-        images={ictPhotos} 
-      />
-
+     
       <GalleryCard 
         folderId="sports-gallery" 
         title="Sports & Extracurricular" 
