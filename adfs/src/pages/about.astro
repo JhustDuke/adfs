@@ -4,31 +4,47 @@ import Card from "../layouts/aboutCard.astro";
 import StaffsCarousel from "../layouts/staffCarousel.astro";
 
 // Define the staff data array
-const schoolStaff = [
+const schoolStaffs  = [
   { 
-			src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200", 
-    caption: "Mrs. Clara Higgins", 
-    subCaption: "Head of Primary Education" 
+    imgSrc: "/images/proprietor.png",
+    caption: "Mr Proprietor's name",
+    subCaption: "Proprietor"
   },
   { 
-   src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200", 
-    caption: "Mr. Julian Vance", 
-    subCaption: "Senior Literacy Lead" 
+    imgSrc: "/images/director_1.jpeg",
+    caption: "Mr. Director's Name",
+    subCaption: "Director-1"
+  }, 
+  { 
+    imgSrc: "/images/director-2.jpeg",
+    caption: "Mrs Directors name",
+    subCaption: "Director-2"
   },
   { 
-    src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200", 
-    caption: "Ms. Amara Okafor", 
-    subCaption: "Pupil Welfare Coordinator" 
+    imgSrc: "/images/admin.jpeg",
+    caption: "Mrs Madu",
+    subCaption: "Admin"
   },
   { 
-    src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200", 
-    caption: "Ms. Amara Okafor", 
-    subCaption: "Pupil Welfare Coordinator" 
-  }
+    imgSrc: "/images/head-teacher.jpg",
+    caption: "Mrs Edith",
+    subCaption: "Head Teacher"
+  },
+  { 
+    imgSrc: "/images/allStaffs.jpeg",
+    caption: "All staffs",
+    subCaption: "Teachers"
+  },
+  { 
+    imgSrc: "/images/mmaNyin.jpeg",
+    caption: "Grade I and IV teachers",
+    subCaption: "Staff"
+  },
 ];
 ---
 
 <BaseLayout title="About Our School">
+
   <div class="container my-5">
     <div class="row mb-5">
       <div class="col-12 text-center">
@@ -68,7 +84,7 @@ const schoolStaff = [
         <hr class="mx-auto" style="width: 50px; height: 3px; background: #1a237e;">
       </div>
       <div class="col-12">
-        <StaffsCarousel staffs={schoolStaff} />
+        <StaffsCarousel AllStaffMembers={schoolStaffs} />
       </div>
     </div>
 

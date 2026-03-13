@@ -43,16 +43,16 @@
 			<!-- ==============================
 			MAIN CONTENT AREA
 			============================== -->
-			<main class="col-12 col-lg-9">
-				<div class="card shadow-sm border-0">
-					<div
-						class="card-body p-2"
-						style="height: 400px; overflow-y: scroll">
-						<!-- dynamic mounted components -->
+			<main class="col-12 col-lg-9 black">
+				<div
+					class="card shadow-sm border-0"
+					style="height: 400px; overflow-y: scroll">
+					<!-- dynamic mounted components -->
+					<center class="p-3">
 						<keep-alive>
 							<component :is="currentComponent"></component>
 						</keep-alive>
-					</div>
+					</center>
 				</div>
 			</main>
 		</div>
