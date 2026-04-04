@@ -14,6 +14,8 @@ export const createNewsTable = async function (): Promise<void> {
        INT AUTO_INCREMENT PRIMARY KEY,
       title 
        VARCHAR(255) NOT NULL UNIQUE,
+      category
+       VARCHAR(100) NOT NULL,      
       excerpt 
        VARCHAR(500) NOT NULL,
       full_text 

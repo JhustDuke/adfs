@@ -33,7 +33,7 @@
 
 <script setup>
 	import { ref, computed } from "vue";
-	import AddNews from "./addNews.vue";
+	import AddNews from "./createNews.vue";
 	import UpdateNews from "./updateNews/updateNews.vue";
 	import DeleteNews from "./deleteNews.vue";
 	import AllNews from "./allNews.vue";
