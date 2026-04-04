@@ -12,6 +12,8 @@
 	"dependencies": {
 		"@astrojs/vue": "^5.1.4",
 		"astro": "^5.17.1",
+		"dotenv": "^17.4.0",
+		"mysql2": "^3.20.0",
 		"vue": "^3.5.29"
 	},
 	"repository": {

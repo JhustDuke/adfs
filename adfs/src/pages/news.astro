@@ -1,10 +1,30 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import NewsCard from "../layouts/newsCard.astro";
+
+const url = new URL("/api/test", Astro.request.url);
+console.log(url)
+const res = await fetch(url);
+const data = await res.json();
 ---
 
 <BaseLayout title="School News & Updates">
   <div class="container my-5">
+
+    <!-- DB TEST (ADDED ONLY) -->
+    <div class="row mb-4 text-center">
+      <div class="col-12">
+        <h6 class="text-muted">Database Status</h6>
+        <p class="fw-bold">
+          {data.message}
+        </p>
+
+        {data.error && (
+          <pre>{JSON.stringify(data.error.sqlMessage, null, 2)}</pre>
+        )}
+      </div>
+    </div>
+
     <div class="row mb-5 text-center">
       <div class="col-12">
         <h1 class="display-4 fw-bold indigo-text text-darken-4">Pupil News & Notices</h1>
@@ -12,6 +32,7 @@ import NewsCard from "../layouts/newsCard.astro";
       </div>
     </div>
 
+    <!-- YOUR ORIGINAL NEWS CARDS (UNCHANGED) -->
     <div class="row justify-content-center">
       <div class="col-lg-10">
         
@@ -44,5 +65,6 @@ import NewsCard from "../layouts/newsCard.astro";
 
       </div>
     </div>
+
   </div>
-</BaseLayout>
+</BaseLayout> 

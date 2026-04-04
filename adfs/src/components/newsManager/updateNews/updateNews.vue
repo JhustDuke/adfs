@@ -46,9 +46,10 @@
 </template>
 
 <script setup lang="ts">
+	//this component uses the update news modal and listen for emited events to know what should be updated
 	import { reactive, ref } from "vue";
 	import UpdateNewsModal from "./updateNewsModal.vue";
-	import type { newsCardInterface } from "../../interfaces";
+	import type { newsCardInterface } from "../../../interfaces";
 
 	const newsList = reactive<newsCardInterface[]>([
 		{
