@@ -253,6 +253,7 @@
 			setTimeout(function () {
 				successMsg.value = null;
 				resetForm();
+				window.location.reload();
 			}, 3000);
 		} catch (err: any) {
 			console.log("network error before returning");
