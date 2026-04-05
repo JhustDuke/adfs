@@ -3,6 +3,34 @@
 		<h4 class="mb-3">Create News</h4>
 
 		<form @submit.prevent="handleSubmit">
+			<!-- CATEGORY -->
+			<div class="mb-3">
+				<label class="form-label">Category</label>
+
+				<select
+					v-model="form.category"
+					class="form-select">
+					<option
+						value=""
+						disabled
+						>Select category</option
+					>
+					<option value="urgent">Urgent</option>
+					<option value="announcement">Announcement</option>
+					<option value="event">Event</option>
+					<option value="academic">Academic</option>
+					<option value="sports">Sports</option>
+					<option value="holiday">Holiday</option>
+					<option value="general">General</option>
+				</select>
+
+				<small
+					class="text-danger"
+					v-if="errors.category">
+					{{ errors.category }}
+				</small>
+			</div>
+
 			<!-- TITLE -->
 			<div class="mb-3">
 				<label class="form-label">Title</label>
@@ -13,20 +41,6 @@
 					class="text-danger"
 					v-if="errors.title">
 					{{ errors.title }}
-				</small>
-			</div>
-
-			<!-- DATE -->
-			<div class="mb-3">
-				<label class="form-label">Date</label>
-				<input
-					type="date"
-					v-model="form.date"
-					class="form-control" />
-				<small
-					class="text-danger"
-					v-if="errors.date">
-					{{ errors.date }}
 				</small>
 			</div>
 
@@ -57,31 +71,17 @@
 				</small>
 			</div>
 
-			<!-- CATEGORY -->
+			<!-- DATE -->
 			<div class="mb-3">
-				<label class="form-label">Category</label>
-
-				<select
-					v-model="form.category"
-					class="form-select">
-					<option
-						value=""
-						disabled
-						>Select category</option
-					>
-					<option value="urgent">Urgent</option>
-					<option value="announcement">Announcement</option>
-					<option value="event">Event</option>
-					<option value="academic">Academic</option>
-					<option value="sports">Sports</option>
-					<option value="holiday">Holiday</option>
-					<option value="general">General</option>
-				</select>
-
+				<label class="form-label">Date</label>
+				<input
+					type="date"
+					v-model="form.date"
+					class="form-control" />
 				<small
 					class="text-danger"
-					v-if="errors.category">
-					{{ errors.category }}
+					v-if="errors.date">
+					{{ errors.date }}
 				</small>
 			</div>
 
@@ -101,6 +101,13 @@
 				class="text-danger mt-2">
 				{{ error }}
 			</div>
+
+			<!-- success msg -->
+			<div
+				v-if="successMsg"
+				class="green-text mt-2">
+				{{ successMsg }}
+			</div>
 		</form>
 	</div>
 </template>
@@ -110,6 +117,7 @@
 
 	const loading = ref(false);
 	const error = ref("");
+	const successMsg = ref<string | null>(null);
 
 	/* CHANGED: removed UI styling fields (bgColor, badgeColor) */
 	const form = reactive({
@@ -239,10 +247,13 @@
 				return;
 			}
 
-			console.log("News created:", data);
+			console.log("News created:");
+			successMsg.value = "news created";
 
-			/* CHANGED: reset only on success */
-			resetForm();
+			setTimeout(function () {
+				successMsg.value = null;
+				resetForm();
+			}, 3000);
 		} catch (err: any) {
 			console.log("network error before returning");
 			error.value = err?.message || "Network error";
