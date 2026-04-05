@@ -3,13 +3,34 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import NewsCard from "../layouts/newsCard.astro";
 
 const url = new URL("/api/news/getAllNews", Astro.request.url);
+
 const res = await fetch(url);
-const data = await res.json();
+
+if (!res.ok) {
+	console.log("early return: bad response");
+	throw new Error("Request failed");
+}
+
+const text = await res.text();
+
+if (!text) {
+	console.log("early return: empty body");
+	throw new Error("Empty response");
+}
+
+let data: any;
+
+try {
+	data = JSON.parse(text);
+} catch (e) {
+	console.log("early return: invalid JSON");
+	throw new Error("Invalid JSON response");
+}
 
 const news = Array.isArray(data) ? data : [];
-
 const error = data?.error;
-if(error)console.error(error)
+
+if (error) console.error(error);
 ---
 
 <BaseLayout title="School News & Updates">
@@ -26,16 +47,14 @@ if(error)console.error(error)
       </div>
     </div>
 
-    {/* ERROR STATE */}
     {error && (
       <div class="row">
         <div class="col-12 text-center red-text fw-bolder text-uppercase">
-          <p>OOPS, an error occured please try again later! </p>
+          <p>OOPS, an error occured please try again later!</p>
         </div>
       </div>
     )}
 
-    {/* EMPTY STATE */}
     {!error && news.length === 0 && (
       <div class="row">
         <div class="col-12 text-center text-muted">
@@ -44,20 +63,19 @@ if(error)console.error(error)
       </div>
     )}
 
-    {/* DATA STATE */}
     {!error && news.length > 0 && (
       <div class="row justify-content-center">
         <div class="col-lg-10">
-
-          {news.map((item: any) => (
-            <NewsCard
-              title={item.title}
-              date={item.date}
-              excerpt={item.excerpt}
-              fullText={item.full_text}
-            />
-          ))}
-
+          {news.map(function (item: any) {
+            return (
+              <NewsCard
+                title={item.title}
+                date={item.date}
+                excerpt={item.excerpt}
+                fullText={item.full_text}
+              />
+            );
+          })}
         </div>
       </div>
     )}

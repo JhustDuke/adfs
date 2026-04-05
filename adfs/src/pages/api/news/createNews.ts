@@ -1,30 +1,39 @@
+export const prerender = false;
 import type { APIRoute } from "astro";
-import { appPool } from "../../../model";
+import { createNewsModel } from "../../../model";
 
-export const GET: APIRoute = async () => {
-	let connection;
-
+export const POST: APIRoute = async function ({ request }) {
 	try {
-		connection = await appPool.getConnection();
+		const body = await request.json();
 
-		const [rows] = await connection.query(
-			"SELECT * FROM news ORDER BY date DESC"
+		const title: string = String(body.title || "").trim();
+		const date: string = String(body.date || "").trim();
+		const excerpt: string = String(body.excerpt || "").trim();
+		const fullText: string = String(body.fullText || "").trim();
+		const category: string = String(body.category || "").trim();
+
+		if (!title || !date || !excerpt || !fullText || !category) {
+			console.log("validation failed before returning");
+			return new Response(
+				JSON.stringify({ error: "All fields are required" }),
+				{ status: 400 }
+			);
+		}
+
+		await createNewsModel(title, date, excerpt, fullText, category);
+
+		return new Response(
+			JSON.stringify({ message: "News created successfully" }),
+			{ status: 201 }
 		);
-
-		return new Response(JSON.stringify(rows), {
-			status: 200,
-			headers: {
-				"Content-Type": "application/json",
-			},
-		});
 	} catch (error: any) {
-		return new Response(JSON.stringify({ error: error.message }), {
-			status: 500,
-			headers: {
-				"Content-Type": "application/json",
-			},
-		});
-	} finally {
-		connection?.release();
+		console.error("createNews error:", error);
+
+		return new Response(
+			JSON.stringify({
+				error: error?.message || "Failed to create news",
+			}),
+			{ status: 500 }
+		);
 	}
 };

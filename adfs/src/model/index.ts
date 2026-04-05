@@ -1,3 +1,2 @@
-export * from "./connection";
-export * from "./createDb";
-export * from "./createNewsTable";
+export * from "./allNewsModel";
+export * from "./createNewsModel";

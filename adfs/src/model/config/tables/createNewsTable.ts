@@ -1,5 +1,5 @@
 // createNewsTable.ts
-import { appPool } from "./";
+import { appPool } from "../";
 
 /**
  * Creates the news table
@@ -8,8 +8,9 @@ export const createNewsTable = async function (): Promise<void> {
 	const connection = await appPool.getConnection();
 
 	try {
+		console.log("creating news_table.....");
 		await connection.query(`
-    CREATE TABLE IF NOT EXISTS news (
+    CREATE TABLE IF NOT EXISTS news_table (
       id 
        INT AUTO_INCREMENT PRIMARY KEY,
       title 
@@ -23,7 +24,7 @@ export const createNewsTable = async function (): Promise<void> {
       date 
        DATETIME NOT NULL,
       created_at 
-       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       
     )
   `);

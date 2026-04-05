@@ -1,8 +1,5 @@
-import { createNewsTable } from ".";
+import { createNewsTable } from "./createNewsTable";
 
-/**
- * Runs all table creation scripts
- */
 export const initTables = async function (): Promise<void> {
 	try {
 		console.log("Creating tables...");

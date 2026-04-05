@@ -1,24 +1,22 @@
 import type { APIRoute } from "astro";
-import { appPool } from "../../../model";
+import { allNewsModel } from "../../../model";
 
 export const GET: APIRoute = async function () {
-	let connection;
-
 	try {
-		connection = await appPool.getConnection();
-		await connection.query("SELECT 1"); //
+		const rows = await allNewsModel();
 
-		return new Response(JSON.stringify({ message: "all news " }), {
+		return new Response(JSON.stringify(rows), {
 			status: 200,
+			headers: {
+				"Content-Type": "application/json",
+			},
 		});
-	} catch (error: unknown) {
-		return new Response(
-			JSON.stringify({ message: "failed to get news", error }),
-			{
-				status: 500,
-			}
-		);
-	} finally {
-		connection?.release();
+	} catch (error: any) {
+		return new Response(JSON.stringify({ error: error.message }), {
+			status: 500,
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
 	}
 };

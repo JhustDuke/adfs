@@ -108,10 +108,6 @@
 <script setup lang="ts">
 	import { reactive, ref } from "vue";
 
-	/* =========================
-   STATE
-   ========================= */
-
 	const loading = ref(false);
 	const error = ref("");
 
@@ -124,16 +120,15 @@
 		category: "",
 	});
 
-	const errors = reactive<Record<"title" | "date" | "excerpt" | "fullText" | "category", string>>({
+	const errors = reactive<
+		Record<"title" | "date" | "excerpt" | "fullText" | "category", string>
+	>({
 		title: "",
 		date: "",
 		excerpt: "",
 		fullText: "",
 		category: "",
 	});
-
-
-
 
 	function sanitizeInput(value: string): string {
 		return value
@@ -150,7 +145,6 @@
 			/(\b(SELECT|INSERT|DELETE|DROP|UPDATE|UNION|OR\s+1=1)\b|--|;|\/\*)/i;
 		return pattern.test(value);
 	}
-
 
 	function validateForm(): boolean {
 		let valid = true;
@@ -182,16 +176,13 @@
 
 			// CHANGED: injection detection
 			if (hasDangerousPatterns(clean)) {
-				//@ts-ignore
-				errors[field.key] = "Invalid input detected";
+				errors[field.key as keyof typeof errors] = "Invalid input detected";
 				valid = false;
 				continue;
 			}
 
-			// CHANGED: XSS detection
 			if (clean !== sanitizeInput(clean)) {
-				//@ts-ignore
-				errors[field.key] = "Unsafe input detected";
+				errors[field.key as keyof typeof errors] = "Unsafe input detected";
 				valid = false;
 				continue;
 			}
@@ -199,7 +190,6 @@
 
 		return valid;
 	}
-
 
 	/* CHANGED: centralized sanitization */
 	function buildPayload() {
@@ -221,11 +211,7 @@
 		form.category = "";
 	}
 
-	/* =========================
-   SUBMIT
-   ========================= */
-
-	function handleSubmit() {
+	async function handleSubmit() {
 		error.value = "";
 
 		if (!validateForm()) return;
@@ -234,12 +220,34 @@
 
 		const payload = buildPayload();
 
-		/* CHANGED: API-ready structure (replace with fetch/axios later) */
-		setTimeout(function () {
-			console.log("SECURE PAYLOAD:", payload);
+		try {
+			/* CHANGED: real API call instead of simulation */
+			const res = await fetch("/api/news/createNews", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(payload),
+			});
 
+			const data = await res.json();
+
+			/* CHANGED: handle backend error */
+			if (!res.ok) {
+				error.value = data?.error || "Failed to create news";
+				console.log("error before returning");
+				return;
+			}
+
+			console.log("News created:", data);
+
+			/* CHANGED: reset only on success */
 			resetForm();
+		} catch (err: any) {
+			console.log("network error before returning");
+			error.value = err?.message || "Network error";
+		} finally {
 			loading.value = false;
-		}, 1200);
+		}
 	}
 </script>
