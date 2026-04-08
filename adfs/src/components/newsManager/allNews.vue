@@ -2,13 +2,29 @@
 	<div class="d-flex flex-column align-items-center py-5">
 		<h3 class="mb-4">All News</h3>
 
+		<!-- LOADING -->
+		<div
+			v-if="loading"
+			class="text-center my-5">
+			<div class="spinner-border text-primary"></div>
+			<p class="mt-2 text-muted">Loading news...</p>
+		</div>
+
+		<!-- ERROR -->
+		<div
+			v-else-if="error"
+			class="text-danger mt-3 text-center">
+			{{ error }}
+		</div>
+
 		<!-- EMPTY STATE -->
 		<div
-			v-if="!loading && newsList.length === 0"
+			v-else-if="newsList.length === 0"
 			class="text-muted">
 			No news update
 		</div>
 
+		<!-- DATA -->
 		<div
 			v-else
 			class="row g-4 w-100">
@@ -16,23 +32,11 @@
 				v-for="item in newsList"
 				:key="item.title + item.date"
 				class="col-12 col-md-6 col-lg-4">
-				<!-- news card -->
 				<NewsCard
 					:news="item"
 					:badgeColor="getBadgeColor(item.category as string)" />
 			</div>
 		</div>
-
-		<div
-			v-if="loading"
-			class="mt-3"
-			>Loading...</div
-		>
-		<div
-			v-if="error"
-			class="text-danger mt-3"
-			>{{ error }}</div
-		>
 	</div>
 </template>
 
@@ -71,7 +75,7 @@
 				return;
 			}
 
-			newsList.value = data;
+			newsList.value = Array.isArray(data) ? data : [];
 		} catch (err: any) {
 			error.value = err?.message || "Network error";
 		} finally {

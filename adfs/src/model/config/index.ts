@@ -1,2 +1,2 @@
-export * from "./createDb";
+export * from "./createDB";
 import "./initAll";

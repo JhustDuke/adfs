@@ -8,74 +8,90 @@
 			@click="closeModal"></div>
 
 		<!-- modal content -->
-		<div class="custom-modal-content">
+		<div class="custom-modal-content z-depth-3">
 			<div class="d-flex justify-content-between mb-3">
-				<h5>Update News</h5>
+				<h5 class="blue-text text-darken-3">Update News</h5>
 
 				<button
 					class="btn-close"
 					@click="closeModal"></button>
 			</div>
 
+			<!-- ERROR -->
 			<div
 				v-if="errorMessage"
-				class="alert alert-danger">
+				class="red lighten-4 red-text text-darken-3 p-2 mb-3 rounded">
 				{{ errorMessage }}
 			</div>
 
-			<input
-				class="form-control mb-3"
-				v-model="form.title"
-				placeholder="Title" />
+			<!-- SUCCESS -->
+			<div
+				v-if="successMessage"
+				class="green lighten-4 green-text text-darken-3 p-2 mb-3 rounded">
+				{{ successMessage }}
+			</div>
 
+			<!-- category -->
 			<input
 				class="form-control mb-3"
-				v-model="form.date"
-				placeholder="Date" />
-
-			<input
-				class="form-control mb-3"
-				v-model="form.category"
+				v-model="formFields.category"
 				placeholder="Category" />
 
+			<!-- title -->
+			<input
+				class="form-control mb-3"
+				v-model="formFields.title"
+				placeholder="Title" />
+
+			<!-- excerpt -->
 			<textarea
 				class="form-control mb-3"
-				rows="2"
-				v-model="form.excerpt"
+				v-model="formFields.excerpt"
 				placeholder="Excerpt"></textarea>
 
+			<!-- fulltxt -->
 			<textarea
 				class="form-control mb-3"
-				rows="5"
-				v-model="form.fullText"
+				v-model="formFields.fullText"
 				placeholder="Full Text"></textarea>
 
+			<!-- date -->
+			<input
+				class="form-control mb-3"
+				v-model="formFields.date"
+				placeholder="Date" />
+
+			<!-- SUBMIT -->
 			<button
 				class="btn btn-primary"
-				@click="updateNews"
+				@click="submitUpdate"
 				:disabled="loading">
 				<span
 					v-if="loading"
 					class="spinner-border spinner-border-sm me-2"></span>
 
-				Update
+				{{ loading ? "Loading..." : "Update" }}
 			</button>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-	import { reactive, ref, watch } from "vue";
-	import type { newsCardInterface } from "../../interfaces";
+	import { reactive, watch, ref } from "vue";
+	import type { newsCardInterface } from "../../../interfaces";
+	import { validateFields } from "../../../utils";
 
 	const props = defineProps<{
 		news: newsCardInterface | null;
 		showModal: boolean;
+		successMessage: string;
+		errorMessage: string;
+		loading: boolean;
 	}>();
 
-	const emit = defineEmits(["close", "update"]);
+	const emit = defineEmits(["close", "update", "validationError"]);
 
-	const form = reactive<any>({
+	const formFields = reactive({
 		title: "",
 		date: "",
 		excerpt: "",
@@ -83,84 +99,99 @@
 		category: "",
 	});
 
-	const loading = ref<boolean>(false);
-	const errorMessage = ref<string>("");
+	const initialTitle = ref<string>("");
 
-	/**
-	 * populate form when news changes
-	 */
 	watch(
-		() => props.news,
+		function () {
+			return props.news;
+		},
 		function (news) {
-			if (!news) {
-				return;
-			}
+			if (!news) return;
 
-			form.title = String(news.title);
-			form.date = String(news.date);
-			form.excerpt = String(news.excerpt);
-			form.fullText = String(news.fullText);
-			form.category = String(news.category || "");
+			formFields.title = String(news.title).trim().toLowerCase();
+			formFields.date = String(news.date);
+			formFields.excerpt = String(news.excerpt);
+			formFields.fullText = String(news.fullText);
+			formFields.category = String(news.category || "");
+
+			initialTitle.value = String(news.title).trim().toLowerCase();
 		},
 		{ immediate: true }
 	);
 
-	/**
-	 * close modal
-	 */
 	const closeModal = function (): void {
 		emit("close");
 	};
 
-	/**
-	 * update news
-	 */
-	const updateNews = function (): void {
-		errorMessage.value = "";
+	const submitUpdate = function (): void {
+		const payload: Record<string, string> = {
+			initialTitle: initialTitle.value,
+			title: String(formFields.title).trim().toLowerCase(),
+			date: String(formFields.date).trim(),
+			excerpt: String(formFields.excerpt).trim(),
+			fullText: String(formFields.fullText).trim(),
+			category: String(formFields.category).trim().toLowerCase(),
+		};
 
-		const title = String(form.title).trim();
-		const date = String(form.date).trim();
-		const excerpt = String(form.excerpt).trim();
-		const fullText = String(form.fullText).trim();
+		try {
+			const requiredFields: string[] = [
+				"initialTitle",
+				"date",
+				"excerpt",
+				"fullText",
+				"category",
+			];
 
-		if (!title || !date || !excerpt || !fullText) {
-			errorMessage.value = "All required fields must be filled.";
+			if (payload.title !== initialTitle.value) {
+				requiredFields.push("title");
+			}
+
+			const validated = validateFields(
+				payload,
+				requiredFields,
+				"incomplete fields"
+			);
+
+			if (payload.title !== initialTitle.value) {
+				emit("update", {
+					initialTitle: validated.initialTitle,
+					updatedTitle: validated.title,
+					date: validated.date,
+					excerpt: validated.excerpt,
+					fullText: validated.fullText,
+					category: validated.category,
+				});
+				return;
+			}
+
+			emit("update", {
+				initialTitle: validated.initialTitle,
+				date: validated.date,
+				excerpt: validated.excerpt,
+				fullText: validated.fullText,
+				category: validated.category,
+			});
+		} catch (error: any) {
+			console.log("early return: validation failed");
+			emit("validationError", error.message);
 			return;
 		}
-
-		loading.value = true;
-
-		setTimeout(function () {
-			emit("update", {
-				title: title,
-				date: date,
-				excerpt: excerpt,
-				fullText: fullText,
-				category: form.category,
-			});
-
-			loading.value = false;
-		}, 1500);
 	};
 </script>
 
 <style scoped>
 	.custom-modal {
 		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		z-index: 2000;
+		inset: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		z-index: 2000;
 	}
 
 	.custom-modal-backdrop {
 		position: absolute;
-		width: 100%;
-		height: 100%;
+		inset: 0;
 		background: rgba(0, 0, 0, 0.5);
 	}
 

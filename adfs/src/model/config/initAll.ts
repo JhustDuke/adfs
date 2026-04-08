@@ -10,6 +10,5 @@ import { initTables } from "./tables/initTables";
 		console.log("Init complete");
 	} catch (error: unknown) {
 		console.error("Init failed:", error);
-		process.exit(1);
 	}
 })();
