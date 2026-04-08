@@ -7,7 +7,7 @@ export const deleteNewsModel = async function (title: string): Promise<void> {
 		connection = await appPool.getConnection();
 
 		const query = `
-			DELETE FROM news
+			DELETE FROM news_table
 			WHERE title = ?
 		`;
 
