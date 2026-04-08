@@ -1,4 +1,4 @@
-import { appPool } from "./config";
+import { appPool } from "../config";
 
 export const allNewsModel = async function (): Promise<any[]> {
 	let connection;

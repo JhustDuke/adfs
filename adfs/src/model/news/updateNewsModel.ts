@@ -1,5 +1,5 @@
-import { appPool } from "./config";
-import type { UpdateNewsPayload } from "../interfaces/updateNewsPayloadInterface";
+import { appPool } from "../config";
+import type { UpdateNewsPayload } from "../../interfaces/updateNewsPayloadInterface";
 
 export const updateNewsModel = async function (
 	payload: UpdateNewsPayload

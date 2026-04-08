@@ -3,7 +3,7 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import { updateNewsModel } from "../../../model";
 validateFields;
-import type { UpdateNewsPayload } from "../../../interfaces/updateNewsPayloadInterface";
+
 import { validateFields } from "../../../utils";
 
 const requiredFields: string[] = [
