@@ -16,11 +16,18 @@
 			{{ errorMessage }}
 		</div>
 
+		<!-- empty state -->
+		<div
+			v-else-if="cards.length === 0"
+			class="col-12 text-center text-muted p-5">
+			No cards to display
+		</div>
+
 		<!-- cards list -->
 		<div
 			v-else
 			v-for="(card, index) in cards"
-			:key="index"
+			:key="card.id"
 			class="col-md-4">
 			<div class="card h-100 shadow-sm border-0">
 				<!-- image + title -->
@@ -101,7 +108,7 @@
 
 	const toggleExpand = function (id: number): void {
 		if (expandedCardId.value === id) {
-			console.log("collapsing card"); // early return log
+			console.log("collapsing card");
 			expandedCardId.value = null;
 			return;
 		}
@@ -119,12 +126,12 @@
 				await response.json();
 
 			if (!response.ok) {
-				console.log("fetch failed"); // early return log
+				console.log("fetch failed");
 				errorMessage.value = result.message;
 				return;
 			}
 
-			cards.value = result.data;
+			cards.value = result.data || [];
 		} catch (error: unknown) {
 			const err = error as Error;
 			errorMessage.value = err.message || "couldn't fetch resources";

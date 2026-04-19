@@ -34,7 +34,7 @@
 	import AddAboutCard from "./addCard/addAboutCard.vue";
 	import AllAboutCards from "./allAboutCards.vue";
 	import UpdateAboutCard from "./updateCard/updateCard.vue";
-	// import DeleteAboutCard from "./deleteAboutCard.vue";
+	import DeleteAboutCard from "./deleteAboutCard.vue";
 
 	const tabs = [
 		{ id: "all", label: "about cards" },
@@ -49,7 +49,7 @@
 		all: AllAboutCards,
 		create: AddAboutCard,
 		update: UpdateAboutCard,
-		// delete: DeleteAboutCard,
+		delete: DeleteAboutCard,
 	};
 
 	const setActiveTab = function (tabId) {

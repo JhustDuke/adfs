@@ -31,7 +31,7 @@
 			<div
 				class="card shadow-sm border-0 h-100"
 				style="max-width: 350px; cursor: pointer"
-				@click="confirmDelete(card)">
+				@click="openDeleteBox(card)">
 				<img
 					:src="card.imageSrc"
 					class="card-img-top"
@@ -45,6 +45,40 @@
 					<p class="text-muted"> {{ card.textContent.slice(0, 100) }}... </p>
 				</div>
 			</div>
+		</div>
+
+		<!-- DELETE CONFIRM MODAL -->
+		<div
+			v-if="showDeleteBox"
+			class="delete-overlay">
+			<div class="delete-box z-depth-3">
+				<h5 class="red-text text-darken-2">
+					Delete "{{ selectedCard?.title }}"?
+				</h5>
+
+				<p class="text-muted"> This action cannot be undone. </p>
+
+				<div class="d-flex justify-content-end gap-2 mt-3">
+					<button
+						class="btn btn-secondary"
+						@click="closeDeleteBox">
+						Cancel
+					</button>
+
+					<button
+						class="btn btn-danger"
+						@click="handleDelete">
+						Delete
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- SUCCESS MESSAGE -->
+		<div
+			v-if="successMessage"
+			class="green lighten-4 green-text text-darken-3 p-3 mt-3 rounded text-center w-100">
+			{{ successMessage }}
 		</div>
 	</div>
 </template>
@@ -63,8 +97,12 @@
 	const isFetching = ref(true);
 	const fetchError = ref(false);
 
+	const showDeleteBox = ref(false);
+	const selectedCard = ref<CardInterface | null>(null);
+	const successMessage = ref("");
+
 	/**
-	 * GET ALL CARDS
+	 * fetch cards
 	 */
 	const fetchCards = async function (): Promise<void> {
 		try {
@@ -91,14 +129,26 @@
 	});
 
 	/**
-	 * DELETE CARD
+	 * open delete box
 	 */
-	const confirmDelete = async function (card: CardInterface): Promise<void> {
-		const ok = window.confirm(
-			`Delete "${card.title}"? This action cannot be undone.`
-		);
+	const openDeleteBox = function (card: CardInterface): void {
+		selectedCard.value = card;
+		showDeleteBox.value = true;
+	};
 
-		if (!ok) return;
+	/**
+	 * close delete box
+	 */
+	const closeDeleteBox = function (): void {
+		showDeleteBox.value = false;
+		selectedCard.value = null;
+	};
+
+	/**
+	 * delete handler
+	 */
+	const handleDelete = async function (): Promise<void> {
+		if (!selectedCard.value) return;
 
 		try {
 			const res = await fetch("/api/about/deleteAboutCard", {
@@ -106,7 +156,9 @@
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ id: card.id }),
+				body: JSON.stringify({
+					id: selectedCard.value.id,
+				}),
 			});
 
 			const data = await res.json();
@@ -116,7 +168,14 @@
 				return;
 			}
 
-			window.location.reload();
+			successMessage.value = "Deleted successfully";
+
+			closeDeleteBox();
+
+			// refresh after 3 seconds
+			setTimeout(function () {
+				window.location.reload();
+			}, 3000);
 		} catch {
 			alert("Network error");
 		}
@@ -127,5 +186,23 @@
 	.card:hover {
 		transform: scale(1.02);
 		transition: 0.2s ease;
+	}
+
+	.delete-overlay {
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.5);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 3000;
+	}
+
+	.delete-box {
+		background: white;
+		padding: 20px;
+		border-radius: 10px;
+		width: 90%;
+		max-width: 400px;
 	}
 </style>

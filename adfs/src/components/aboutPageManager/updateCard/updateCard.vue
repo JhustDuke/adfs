@@ -1,13 +1,36 @@
 <template>
 	<div class="row g-3">
+		<!-- loading -->
+		<div
+			v-if="cardsLoading"
+			class="col-12 text-center p-5">
+			<div class="spinner-border"></div>
+		</div>
+
+		<!-- error -->
+		<div
+			v-else-if="errorMessage"
+			class="col-12 text-center red-text text-darken-3">
+			{{ errorMessage }}
+		</div>
+
+		<!-- empty state -->
+		<div
+			v-else-if="cards.length === 0"
+			class="col-12 text-center text-muted p-5">
+			No cards to display
+		</div>
+
 		<!-- cards -->
 		<div
+			v-else
 			v-for="card in cards"
 			:key="card.id"
 			class="col-md-4">
 			<div
 				class="card h-100 shadow-sm border-0"
-				@click="openModal(card)">
+				@click="openModal(card)"
+				style="cursor: pointer">
 				<div class="position-relative">
 					<img
 						:src="card.imageSrc"
@@ -53,6 +76,7 @@
 	};
 
 	const cards = ref<CardInterface[]>([]);
+	const cardsLoading = ref(false);
 
 	const showModal = ref(false);
 	const selectedCard = ref<CardInterface | null>(null);
@@ -65,14 +89,24 @@
 	 * fetch all cards
 	 */
 	const fetchCards = async function (): Promise<void> {
+		cardsLoading.value = true;
+		errorMessage.value = "";
+
 		try {
 			const res = await fetch("/api/about/getAllAboutCard");
-
 			const data = await res.json();
+
+			if (!res.ok) {
+				errorMessage.value = data.message;
+				return;
+			}
 
 			cards.value = data.data || [];
 		} catch (error: unknown) {
-			console.log("fetch failed"); // early return log
+			const err = error as Error;
+			errorMessage.value = err.message || "fetch failed";
+		} finally {
+			cardsLoading.value = false;
 		}
 	};
 
@@ -93,7 +127,7 @@
 	};
 
 	/**
-	 * handle update from modal
+	 * handle update
 	 */
 	const handleUpdate = async function (formData: FormData): Promise<void> {
 		loading.value = true;
@@ -109,20 +143,19 @@
 			const result = await res.json();
 
 			if (!res.ok) {
-				console.log("update failed"); // early return log
 				errorMessage.value = result.message;
 				return;
 			}
 
 			successMessage.value = result.message;
 
-			// 🔥 HARD REFRESH (your requirement)
 			window.location.reload();
 		} catch (error: unknown) {
 			const err = error as Error;
 			errorMessage.value = err.message;
 		} finally {
 			loading.value = false;
+
 			setTimeout(function () {
 				errorMessage.value = "";
 			}, 5000);
