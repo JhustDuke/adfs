@@ -33,7 +33,7 @@
 
 	import AddAboutCard from "./addCard/addAboutCard.vue";
 	import AllAboutCards from "./allAboutCards.vue";
-	// import UpdateAboutCard from "./updateAboutCard.vue";
+	import UpdateAboutCard from "./updateCard/updateCard.vue";
 	// import DeleteAboutCard from "./deleteAboutCard.vue";
 
 	const tabs = [
@@ -48,7 +48,7 @@
 	const componentMap = {
 		all: AllAboutCards,
 		create: AddAboutCard,
-		// update: UpdateAboutCard,
+		update: UpdateAboutCard,
 		// delete: DeleteAboutCard,
 	};
 

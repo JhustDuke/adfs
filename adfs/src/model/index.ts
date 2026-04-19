@@ -5,3 +5,4 @@ export * from "./news/deleteNewsModel";
 
 export * from "./about_model/createAboutCardModel";
 export * from "./about_model/getAllAboutCard";
+export * from "./about_model/updateAboutCardModel";
