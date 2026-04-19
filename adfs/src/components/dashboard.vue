@@ -65,11 +65,13 @@
 	import NewsManager from "./newsManager/newsManager.vue";
 	import AcademicsManager from "./academicPageManager/academicManager.vue";
 	import GalleryManager from "./galleryPageManager/galleryManager.vue";
+	import AboutManager from "./aboutPageManager/aboutManager.vue";
 
 	const tabs = [
 		{ id: "news", label: "News page" },
 		{ id: "academics", label: "Academic Page" },
 		{ id: "gallery", label: "Gallery page" },
+		{ id: "about", label: "about page" },
 	];
 
 	//news is selected as the active component
@@ -80,6 +82,7 @@
 		news: NewsManager,
 		academics: AcademicsManager,
 		gallery: GalleryManager,
+		about: AboutManager,
 	};
 
 	const setActiveTab = function (tabId) {
