@@ -1,8 +1,5 @@
 import { createNewsTable } from "./createNewsTable";
-import {
-	createAcademicCollectionsTable,
-	createAcademicFilesTable,
-} from "./createAcademicTables";
+import { createAcademicPageTable } from "./createAcademicTables";
 import { createAboutCardsTable } from "./aboutCardTable";
 
 export const initTables = async function (): Promise<void> {
@@ -10,8 +7,7 @@ export const initTables = async function (): Promise<void> {
 		console.log("Creating tables...");
 
 		await createNewsTable();
-		await createAcademicCollectionsTable();
-		await createAcademicFilesTable();
+		await createAcademicPageTable();
 		await createAboutCardsTable();
 
 		console.log("Tables created successfully");

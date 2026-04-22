@@ -1,79 +1,34 @@
-// createAcademicTables.ts
 import { appPool } from "../";
 
 /**
- * Creates academic_collections table
+ * Creates the academic page table
  */
-export const createAcademicCollectionsTable = async function (): Promise<void> {
-	const connection = await appPool.getConnection();
+export const createAcademicPageTable = async function (): Promise<void> {
+	const connection: any = await appPool.getConnection();
 
 	try {
-		console.log("creating academic_collections.....");
+		console.log("creating academic_page_table...");
 
 		await connection.query(`
-			CREATE TABLE IF NOT EXISTS academic_collections (
-				id 
+			CREATE TABLE IF NOT EXISTS academic_page_table (
+				id
 					INT AUTO_INCREMENT PRIMARY KEY,
-
-				name 
-					VARCHAR(100) NOT NULL UNIQUE,
-
-				excerpt 
-					VARCHAR(255) NOT NULL,
-
-				created_at 
+				image_url
+					TEXT NOT NULL,
+				caption
+					VARCHAR(255) NOT NULL UNIQUE,
+				excerpte
+					TEXT,
+				href
+					VARCHAR(255) DEFAULT '/gallery',
+				text_caption_color
+					VARCHAR(50) DEFAULT 'black',
+				created_at
 					TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 			)
 		`);
 
-		console.log("academic_collections table ensured");
-	} catch (err: any) {
-		console.error("academic_collections table not created");
-		throw err;
-	} finally {
-		connection.release();
-	}
-};
-
-/**
- * Creates academic_files table
- */
-export const createAcademicFilesTable = async function (): Promise<void> {
-	const connection = await appPool.getConnection();
-
-	try {
-		console.log("creating academic_files.....");
-
-		await connection.query(`
-			CREATE TABLE IF NOT EXISTS academic_files (
-				id 
-					INT AUTO_INCREMENT PRIMARY KEY,
-
-				collection_id 
-					INT NOT NULL,
-
-				image_url 
-					VARCHAR(500) NOT NULL,
-
-				person_name 
-					VARCHAR(150),
-
-				role 
-					ENUM('proprietor', 'director', 'admin', 'secretary', 'staff') NOT NULL,
-
-				created_at 
-					TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-				FOREIGN KEY (collection_id)
-				REFERENCES academic_collections(id)
-				ON DELETE CASCADE
-			)
-		`);
-
-		console.log("academic_files table ensured");
-	} catch (err: any) {
-		console.error("academic_files table not created");
-		throw err;
+		console.log("academic_page_table created...");
 	} finally {
 		connection.release();
 	}
