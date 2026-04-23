@@ -17,12 +17,14 @@ export const createAcademicPageTable = async function (): Promise<void> {
 					TEXT NOT NULL,
 				caption
 					VARCHAR(255) NOT NULL UNIQUE,
-				excerpte
+				excerpts
 					TEXT,
 				href
 					VARCHAR(255) DEFAULT '/gallery',
 				text_caption_color
-					VARCHAR(50) DEFAULT 'black',
+					VARCHAR(50) DEFAULT 'black-text',
+				bg_color
+					VARCHAR(50) DEFAULT '',
 				created_at
 					TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 			)

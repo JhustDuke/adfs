@@ -33,7 +33,7 @@
 
 <script setup>
 	import { ref, computed } from "vue";
-	import AddContent from "./addAcademicContent.vue";
+	import AddContent from "./addAcademicCard/addAcademicContent.vue";
 	import DeleteContent from "./delAcademicContent.vue";
 	import UpdateContent from "./updateAcademicContent.vue";
 	import AllContent from "./allAcademicContent.vue";

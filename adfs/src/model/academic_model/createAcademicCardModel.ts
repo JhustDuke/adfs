@@ -1,23 +1,26 @@
 import { appPool } from "../config";
 import fs from "fs";
 import path from "path";
-import { ensureUploadDir, validateFields } from "../../utils";
+import { ensureUploadDir } from "../../utils";
 
-interface CreateAboutCardInputInterface {
+interface CreateAcademicPageInputInterface {
 	caption: string;
-	textContent: string;
+	excerpts: string;
 	imageBuffer: Buffer;
 	imageOriginalName: string;
+	textCaptionColor?: string | null;
+	bgColor?: string | null;
 }
 
 const uploadDir: string = path.join(
 	process.cwd(),
-	"public/images/aboutCardImg"
+	"public/images/academicPageImg"
 );
-export const createAboutCardModel = async function (
-	input: CreateAboutCardInputInterface
+
+export const createAcademicPageModel = async function (
+	input: CreateAcademicPageInputInterface
 ): Promise<void> {
-	let connection;
+	let connection: any;
 
 	try {
 		connection = await appPool.getConnection();
@@ -31,27 +34,36 @@ export const createAboutCardModel = async function (
 			throw new Error("Image name already exists");
 		}
 
-		const imageUrl: string = `/images/aboutCardImg/${fileName}`;
+		const imageUrl: string = `/images/academicPageImg/${fileName}`;
 
 		await connection.query(
 			`
-			INSERT INTO about_cards (caption, image_url, text_content)
-			VALUES (?, ?, ?)
+				INSERT INTO academic_page_table (
+					caption,
+					excerpts,
+					image_url,
+					text_caption_color,
+					bg_color
+				)
+				VALUES (?, ?, ?, ?, ?)
 			`,
-			[input.caption, imageUrl, input.textContent]
+			[
+				input.caption,
+				input.excerpts,
+				imageUrl,
+				input.textCaptionColor ?? "",
+				input.bgColor ?? "",
+			]
 		);
 
-		//write to disk, after inserting into the db
 		fs.writeFileSync(finalPath, input.imageBuffer);
 	} catch (error: any) {
 		if (error.code && error.sqlMessage) {
-			// Handle SQL-specific errors
 			throw new Error(`SQL Error [${error.code}]: ${error.sqlMessage}`);
-		} else {
-			console.log(error);
-			// Fallback for other errors
-			throw new Error(error.message || "An unexpected error occurred");
 		}
+
+		console.log(error);
+		throw new Error(error.message || "An unexpected error occurred");
 	} finally {
 		if (connection) connection.release();
 	}

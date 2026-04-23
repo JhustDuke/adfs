@@ -1,6 +1,7 @@
 import { appPool } from "../config";
 import fs from "fs";
 import path from "path";
+import { ensureUploadDir } from "../../utils";
 
 interface UpdateAboutCardInputInterface {
 	id: number;
@@ -14,12 +15,6 @@ const uploadDir: string = path.join(
 	process.cwd(),
 	"public/images/aboutCardImg"
 );
-
-const ensureUploadDir = function (dir: string) {
-	if (!fs.existsSync(dir)) {
-		fs.mkdirSync(dir, { recursive: true });
-	}
-};
 
 const extractFileName = function (url: string): string {
 	return url.split("/").pop() || "";

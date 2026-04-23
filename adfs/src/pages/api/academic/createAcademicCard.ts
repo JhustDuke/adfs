@@ -12,14 +12,9 @@ export const POST: APIRoute = async function ({ request }) {
 		const caption: string = String(formData.get("caption") || "").trim();
 		const excerpts: string = String(formData.get("excerpts") || "").trim();
 		const image = formData.get("image") as File | null;
-
-		const textCaptionColor: string | null = formData.get("textCaptionColor")
-			? String(formData.get("textCaptionColor")).trim()
-			: null;
-
-		const bgColor: string | null = formData.get("bgColor")
-			? String(formData.get("bgColor")).trim()
-			: null;
+		const textCaptionColor: string = String(
+			formData.get("textCaptionColor") || "black"
+		).trim();
 
 		if (!caption) {
 			throw new Error("Caption is required");
@@ -46,13 +41,10 @@ export const POST: APIRoute = async function ({ request }) {
 			imageBuffer,
 			imageOriginalName,
 			textCaptionColor,
-			bgColor,
 		});
 
 		return new Response(
-			JSON.stringify({
-				message: "Academic page created successfully",
-			}),
+			JSON.stringify({ message: "Academic page item created successfully" }),
 			{ status: 201 }
 		);
 	} catch (error: any) {
@@ -60,7 +52,7 @@ export const POST: APIRoute = async function ({ request }) {
 
 		return new Response(
 			JSON.stringify({
-				message: error?.message || "Failed to create academic page",
+				message: error?.message || "Failed to create academic page item",
 			}),
 			{ status: 500 }
 		);

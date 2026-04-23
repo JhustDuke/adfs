@@ -9,3 +9,6 @@ export * from "./about_model/createAboutCardModel";
 export * from "./about_model/getAllAboutCard";
 export * from "./about_model/updateAboutCardModel";
 export * from "./about_model/deleteAboutCardModel";
+
+//academic
+export * from "./academic_model/createAcademicCardModel";
