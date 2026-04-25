@@ -12,3 +12,4 @@ export * from "./about_model/deleteAboutCardModel";
 
 //academic
 export * from "./academic_model/createAcademicCardModel";
+export * from "./academic_model/getAllAcademicCardModel";

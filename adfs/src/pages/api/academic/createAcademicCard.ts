@@ -10,12 +10,14 @@ export const POST: APIRoute = async function ({ request }) {
 		const formData: FormData = await request.formData();
 
 		const caption: string = String(formData.get("caption") || "").trim();
+
 		const excerpts: string = String(formData.get("excerpts") || "").trim();
 		const image = formData.get("image") as File | null;
 		const textCaptionColor: string = String(
 			formData.get("textCaptionColor") || "black"
 		).trim();
 
+		const bgColor: string = String(formData.get("bgColor") || "").trim();
 		if (!caption) {
 			throw new Error("Caption is required");
 		}
@@ -41,6 +43,7 @@ export const POST: APIRoute = async function ({ request }) {
 			imageBuffer,
 			imageOriginalName,
 			textCaptionColor,
+			bgColor,
 		});
 
 		return new Response(

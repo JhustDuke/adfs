@@ -34,7 +34,6 @@
 		<!-- CAPTION COLOR -->
 		<div class="mb-3">
 			<label class="form-label text-muted">Caption Color</label>
-
 			<select
 				v-model="form.captionColor"
 				class="form-select">
@@ -50,7 +49,6 @@
 		<!-- BG COLOR -->
 		<div class="mb-3">
 			<label class="form-label text-muted">Background Color</label>
-
 			<select
 				v-model="form.bgColor"
 				class="form-select">
@@ -90,6 +88,8 @@
 <script setup lang="ts">
 	import { ref } from "vue";
 	import AcademicPreview from "./previewAcademicCard.vue";
+	import { resolveTextClass, resolveBgClass } from "./normalizeColors";
+	import { bgColors, colors } from "./uiColors";
 
 	const form = ref({
 		caption: "",
@@ -107,40 +107,6 @@
 	const error = ref("");
 	const success = ref("");
 
-	const colors = [
-		{ label: "Black (default)", value: "black" },
-		{ label: "Red", value: "red" },
-		{ label: "Blue", value: "blue" },
-		{ label: "Green", value: "green" },
-		{ label: "Indigo", value: "indigo" },
-	];
-
-	const bgColors = [
-		{ label: "Grey (default)", value: "grey" },
-		{ label: "Red Light", value: "red-light" },
-		{ label: "Blue Light", value: "blue-light" },
-		{ label: "Green Light", value: "green-light" },
-		{ label: "White", value: "white" },
-	];
-
-	function handleFile(e: Event): void {
-		const target = e.target as HTMLInputElement;
-		const file = target.files?.[0];
-
-		if (!file) return;
-
-		imageFile.value = file;
-		imageUrl.value = URL.createObjectURL(file);
-	}
-
-	function openPreview(): void {
-		showPreview.value = true;
-	}
-
-	function closePreview(): void {
-		showPreview.value = false;
-	}
-
 	async function submit(): Promise<void> {
 		if (loading.value) return;
 
@@ -153,8 +119,14 @@
 
 			formData.append("caption", form.value.caption);
 			formData.append("excerpts", form.value.excerpts);
-			formData.append("textCaptionColor", form.value.captionColor);
-			formData.append("bgColor", form.value.bgColor);
+
+			// ✅ using extracted helpers
+			formData.append(
+				"textCaptionColor",
+				resolveTextClass(form.value.captionColor)
+			);
+
+			formData.append("bgColor", resolveBgClass(form.value.bgColor));
 
 			if (imageFile.value) {
 				formData.append("image", imageFile.value);
@@ -173,7 +145,7 @@
 			const data = await res.json();
 			success.value = data.message || "Created successfully";
 
-			setTimeout(() => {
+			setTimeout(function () {
 				showPreview.value = false;
 				window.location.reload();
 			}, 2000);
@@ -182,5 +154,23 @@
 		} finally {
 			loading.value = false;
 		}
+	}
+
+	function handleFile(e: Event): void {
+		const target = e.target as HTMLInputElement;
+		const file = target.files?.[0];
+
+		if (!file) return;
+
+		imageFile.value = file;
+		imageUrl.value = URL.createObjectURL(file);
+	}
+
+	function openPreview(): void {
+		showPreview.value = true;
+	}
+
+	function closePreview(): void {
+		showPreview.value = false;
 	}
 </script>

@@ -66,61 +66,41 @@
 </template>
 
 <script setup lang="ts">
-	import { computed } from "vue";
+import { computed } from "vue";
+import { resolveTextClass, resolveBgClass } from "./normalizeColors";
 
-	const props = defineProps<{
-		show: boolean;
-		caption: string;
-		excerpts: string;
-		imageSrc: string;
-		captionColor: string;
-		bgColor: string;
+const props = defineProps<{
+	show: boolean;
+	caption: string;
+	excerpts: string;
+	imageSrc: string;
+	captionColor: string;
+	bgColor: string;
+	loading: boolean;
+	errorMessage: string;
+	successMessage: string;
+}>();
 
-		loading: boolean;
-		errorMessage: string;
-		successMessage: string;
-	}>();
+const emit = defineEmits(["close", "confirm"]);
 
-	const emit = defineEmits(["close", "confirm"]);
+function close(): void {
+	emit("close");
+}
 
-	function close(): void {
-		emit("close");
-	}
+function confirm(): void {
+	if (props.loading) return;
+	emit("confirm");
+}
 
-	function confirm(): void {
-		if (props.loading) return;
-		emit("confirm");
-	}
+/* refactored: using shared resolver */
+const captionClass = computed(function () {
+	return resolveTextClass(props.captionColor);
+});
 
-	const captionClass = computed(() => {
-		switch (props.captionColor) {
-			case "red":
-				return "red-text text-darken-3";
-			case "blue":
-				return "blue-text text-darken-3";
-			case "green":
-				return "green-text text-darken-3";
-			case "indigo":
-				return "indigo-text";
-			default:
-				return "black-text";
-		}
-	});
-
-	const bgClass = computed(() => {
-		switch (props.bgColor) {
-			case "red-light":
-				return "red lighten-5";
-			case "blue-light":
-				return "blue lighten-5";
-			case "green-light":
-				return "green lighten-5";
-			case "white":
-				return "white";
-			default:
-				return "grey lighten-2";
-		}
-	});
+/* refactored: using shared resolver */
+const bgClass = computed(function () {
+	return resolveBgClass(props.bgColor);
+});
 </script>
 <style scoped>
 	.custom-modal {
