@@ -9,6 +9,10 @@ export default defineConfig({
 	adapter: node({
 		mode: "standalone", // or "middleware"
 	}),
+	server: {
+		host: true,
+		port: process.env.PORT ? Number(process.env.PORT) : 4321,
+	},
 	devToolbar: { enabled: false },
 	integrations: [
 		vue({
