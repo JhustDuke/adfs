@@ -1,3 +1,4 @@
+import { DBTableNames } from "../../utils";
 import { appPool } from "../config";
 
 export const createNewsModel = async function (
@@ -14,7 +15,7 @@ export const createNewsModel = async function (
 
 		await connection.query(
 			`
-			INSERT INTO news_table (title, date, excerpt, full_text, category)
+			INSERT INTO ${DBTableNames.newsTable} (title, date, excerpt, full_text, category)
 			VALUES (?, ?, ?, ?, ?)
 			`,
 			[title, date, excerpt, fullText, category]

@@ -1,4 +1,5 @@
 import { appPool } from "../config";
+import { DBTableNames } from "../../utils";
 
 export const allNewsModel = async function (): Promise<any[]> {
 	let connection;
@@ -7,7 +8,7 @@ export const allNewsModel = async function (): Promise<any[]> {
 		connection = await appPool.getConnection();
 
 		const [rows] = await connection.query(
-			"SELECT * FROM news_table ORDER BY date DESC"
+			`SELECT * FROM ${DBTableNames.newsTable} ORDER BY date DESC`
 		);
 
 		return rows as any[];

@@ -1,7 +1,7 @@
 import { appPool } from "../config";
 import fs from "fs";
 import path from "path";
-import { ensureUploadDir } from "../../utils";
+import { ensureUploadDir, imageDir, DBTableNames } from "../../utils";
 
 interface CreateAcademicPageInputInterface {
 	caption: string;
@@ -12,10 +12,9 @@ interface CreateAcademicPageInputInterface {
 	bgColor?: string | null;
 }
 
-const uploadDir: string = path.join(
-	process.cwd(),
-	"public/images/academicPageImg"
-);
+const imagePath = imageDir.academicImagesPath;
+
+const uploadDir: string = path.join(process.cwd(), imagePath);
 
 export const createAcademicPageModel = async function (
 	input: CreateAcademicPageInputInterface
@@ -34,11 +33,11 @@ export const createAcademicPageModel = async function (
 			throw new Error("Image name already exists");
 		}
 
-		const imageUrl: string = `/images/academicPageImg/${fileName}`;
+		const imageUrl: string = `${imagePath}/${fileName}`;
 
 		await connection.query(
 			`
-				INSERT INTO academic_page_table (
+				INSERT INTO  ${DBTableNames.academicTable}(
 					caption,
 					excerpts,
 					image_url,

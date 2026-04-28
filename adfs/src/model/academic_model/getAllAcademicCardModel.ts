@@ -1,3 +1,4 @@
+import { DBTableNames } from "../../utils";
 import { appPool } from "../config";
 
 interface CreateAcademicPageInputInterface {
@@ -30,7 +31,7 @@ export const getAllAcademicCardsModel = async function (): Promise<
     text_caption_color AS textCaptionColor,
 				bg_color AS bgColor
 				
-			FROM academic_page_table
+			FROM ${DBTableNames.academicTable}
 			`
 		)) as [CreateAcademicPageInputInterface[], unknown];
 

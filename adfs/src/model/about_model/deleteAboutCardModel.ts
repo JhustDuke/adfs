@@ -1,11 +1,11 @@
 import { appPool } from "../config";
 import fs from "fs";
 import path from "path";
+import { imageDir, DBTableNames } from "../../utils";
 
-const uploadDir: string = path.join(
-	process.cwd(),
-	"public/images/aboutCardImg"
-);
+const imagePath = imageDir.aboutImagePath;
+
+const uploadDir: string = path.join(process.cwd(), imagePath);
 
 const extractFileName = function (url: string): string {
 	return url.split("/").pop() || "";
@@ -22,7 +22,7 @@ export const deleteAboutCardModel = async function (id: number): Promise<void> {
 
 		// get existing record (to find image)
 		const [rows] = (await connection.query(
-			`SELECT image_url FROM about_cards WHERE id = ?`,
+			`SELECT image_url FROM ${DBTableNames.aboutTable} WHERE id = ?`,
 			[id]
 		)) as [any[], unknown];
 
@@ -33,7 +33,10 @@ export const deleteAboutCardModel = async function (id: number): Promise<void> {
 		const imageUrl: string | null = rows[0]?.image_url;
 
 		// delete DB record first
-		await connection.query(`DELETE FROM about_cards WHERE id = ?`, [id]);
+		await connection.query(
+			`DELETE FROM ${DBTableNames.aboutTable} WHERE id = ?`,
+			[id]
+		);
 
 		// delete image file if exists
 		if (imageUrl) {

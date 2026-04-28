@@ -1,7 +1,7 @@
 import { appPool } from "../config";
 import fs from "fs";
 import path from "path";
-import { ensureUploadDir, validateFields } from "../../utils";
+import { ensureUploadDir, imageDir, DBTableNames } from "../../utils";
 
 interface CreateAboutCardInputInterface {
 	caption: string;
@@ -10,10 +10,8 @@ interface CreateAboutCardInputInterface {
 	imageOriginalName: string;
 }
 
-const uploadDir: string = path.join(
-	process.cwd(),
-	"public/images/aboutCardImg"
-);
+const imagePath = imageDir.aboutImagePath;
+const uploadDir: string = path.join(process.cwd(), imagePath);
 export const createAboutCardModel = async function (
 	input: CreateAboutCardInputInterface
 ): Promise<void> {
@@ -31,11 +29,11 @@ export const createAboutCardModel = async function (
 			throw new Error("Image name already exists");
 		}
 
-		const imageUrl: string = `/images/aboutCardImg/${fileName}`;
+		const imageUrl: string = `${imagePath}/${fileName}`;
 
 		await connection.query(
 			`
-			INSERT INTO about_cards (caption, image_url, text_content)
+			INSERT INTO ${DBTableNames.aboutTable} (caption, image_url, text_content)
 			VALUES (?, ?, ?)
 			`,
 			[input.caption, imageUrl, input.textContent]

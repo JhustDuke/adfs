@@ -1,3 +1,4 @@
+import { DBTableNames } from "../../utils";
 import { appPool } from "../config";
 
 type AboutCardInterface = {
@@ -25,7 +26,7 @@ export const getAllAboutCardsModel = async function (): Promise<
 				caption AS title,
 				text_content AS textContent,
 				image_url AS imageSrc
-			FROM about_cards
+			FROM ${DBTableNames.aboutTable}
 			`
 		)) as [AboutCardInterface[], unknown];
 

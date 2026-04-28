@@ -1,4 +1,6 @@
+import { DBTableNames } from "../../utils";
 import { appPool } from "../config";
+
 
 export const deleteNewsModel = async function (title: string): Promise<void> {
 	let connection;
@@ -7,7 +9,7 @@ export const deleteNewsModel = async function (title: string): Promise<void> {
 		connection = await appPool.getConnection();
 
 		const query = `
-			DELETE FROM news_table
+			DELETE FROM ${DBTableNames.newsTable}
 			WHERE title = ?
 		`;
 

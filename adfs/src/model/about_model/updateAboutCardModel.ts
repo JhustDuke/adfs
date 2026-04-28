@@ -1,7 +1,7 @@
 import { appPool } from "../config";
 import fs from "fs";
 import path from "path";
-import { ensureUploadDir } from "../../utils";
+import { ensureUploadDir, imageDir,DBTableNames } from "../../utils";
 
 interface UpdateAboutCardInputInterface {
 	id: number;
@@ -11,10 +11,10 @@ interface UpdateAboutCardInputInterface {
 	imageOriginalName?: string;
 }
 
-const uploadDir: string = path.join(
-	process.cwd(),
-	"public/images/aboutCardImg"
-);
+const imagePath = imageDir.aboutImagePath;
+const tableName=DBTableNames.aboutTable
+
+const uploadDir: string = path.join(process.cwd(), imagePath);
 
 const extractFileName = function (url: string): string {
 	return url.split("/").pop() || "";
@@ -35,7 +35,7 @@ export const updateAboutCardModel = async function (
 
 		// get existing record
 		const [rows] = (await connection.query(
-			`SELECT id, image_url FROM about_cards WHERE id = ?`,
+			`SELECT id, image_url FROM ${tableName}  WHERE id = ?`,
 			[input.id]
 		)) as [any[], unknown];
 
@@ -51,12 +51,12 @@ export const updateAboutCardModel = async function (
 		if (input.imageBuffer && input.imageOriginalName) {
 			const fileName = input.imageOriginalName;
 			const newPath = path.join(uploadDir, fileName);
-			newImageUrl = `/images/aboutCardImg/${fileName}`;
+			newImageUrl = `${imagePath}/${fileName}`;
 
 			// collision check
 			if (fs.existsSync(newPath)) {
 				const [existingRows] = (await connection.query(
-					`SELECT id FROM about_cards WHERE image_url = ?`,
+					`SELECT id FROM ${tableName} WHERE image_url = ?`,
 					[newImageUrl]
 				)) as [any[], unknown];
 
@@ -87,7 +87,7 @@ export const updateAboutCardModel = async function (
 		if (newImageUrl) {
 			await connection.query(
 				`
-				UPDATE about_cards
+				UPDATE ${tableName}
 				SET caption = ?, text_content = ?, image_url = ?
 				WHERE id = ?
 				`,
@@ -96,7 +96,7 @@ export const updateAboutCardModel = async function (
 		} else {
 			await connection.query(
 				`
-				UPDATE about_cards
+				UPDATE ${tableName}
 				SET caption = ?, text_content = ?
 				WHERE id = ?
 				`,

@@ -1,4 +1,5 @@
 import { appPool } from "../config";
+import { DBTableNames } from "../../utils";
 import type { UpdateNewsPayload } from "../../interfaces/updateNewsPayloadInterface";
 
 export const updateNewsModel = async function (
@@ -14,7 +15,7 @@ export const updateNewsModel = async function (
 		if (payload.updatedTitle) {
 			[result] = await connection.query(
 				`
-				UPDATE news_table
+				UPDATE ${DBTableNames.newsTable}
 				SET title = ?, date = ?, excerpt = ?, full_text = ?, category = ?
 				WHERE title = ?
 				`,
@@ -30,7 +31,7 @@ export const updateNewsModel = async function (
 		} else {
 			[result] = await connection.query(
 				`
-				UPDATE news_table
+				UPDATE ${DBTableNames.newsTable}
 				SET date = ?, excerpt = ?, full_text = ?, category = ?
 				WHERE title = ?
 				`,
