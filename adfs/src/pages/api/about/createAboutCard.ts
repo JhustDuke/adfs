@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
-import { createAcademicPageModel } from "../../../model";
+import { createAboutCardModel } from "../../../model";
 
 const allowedSize = 2 * 1024 * 1024; // 2MB
 
@@ -12,14 +12,6 @@ export const POST: APIRoute = async function ({ request }) {
 		const caption: string = String(formData.get("caption") || "").trim();
 		const excerpts: string = String(formData.get("excerpts") || "").trim();
 		const image = formData.get("image") as File | null;
-
-		const textCaptionColor: string | null = formData.get("textCaptionColor")
-			? String(formData.get("textCaptionColor")).trim()
-			: null;
-
-		const bgColor: string | null = formData.get("bgColor")
-			? String(formData.get("bgColor")).trim()
-			: null;
 
 		if (!caption) {
 			throw new Error("Caption is required");
@@ -40,27 +32,25 @@ export const POST: APIRoute = async function ({ request }) {
 		const imageBuffer: Buffer = Buffer.from(await image.arrayBuffer());
 		const imageOriginalName: string = image.name;
 
-		await createAcademicPageModel({
+		await createAboutCardModel({
 			caption,
-			excerpts,
+			textContent: excerpts,
 			imageBuffer,
 			imageOriginalName,
-			textCaptionColor,
-			bgColor,
 		});
 
 		return new Response(
 			JSON.stringify({
-				message: "Academic page created successfully",
+				message: "about card created successfully",
 			}),
 			{ status: 201 }
 		);
 	} catch (error: any) {
-		console.error("createAcademicPage error:", error);
+		console.error("createAboutCard error:", error);
 
 		return new Response(
 			JSON.stringify({
-				message: error?.message || "Failed to create academic page",
+				message: error?.message || "Failed to create about card",
 			}),
 			{ status: 500 }
 		);

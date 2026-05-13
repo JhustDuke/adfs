@@ -31,7 +31,7 @@
 <script setup>
 	import { ref, computed } from "vue";
 
-	import AddAboutCard from "./addCard/addAboutCard.vue";
+	import AddAboutCard from "./addCard/createAboutCard.vue";
 	import AllAboutCards from "./allAboutCards.vue";
 	import UpdateAboutCard from "./updateCard/updateCard.vue";
 	import DeleteAboutCard from "./deleteAboutCard.vue";

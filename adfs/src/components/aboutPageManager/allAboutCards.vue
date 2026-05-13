@@ -26,7 +26,7 @@
 		<!-- cards list -->
 		<div
 			v-else
-			v-for="(card, index) in cards"
+			v-for="card in cards"
 			:key="card.id"
 			class="col-md-4">
 			<div class="card h-100 shadow-sm border-0">
@@ -95,26 +95,15 @@
 		textContent: string;
 		imageSrc: string;
 	}
+	onMounted(function () {
+		fetchCards();
+	});
 
 	const cards = ref<CardInterface[]>([]);
 	const expandedCardId = ref<number | null>(null);
 
 	const loading = ref<boolean>(false);
 	const errorMessage = ref<string>("");
-
-	const isExpanded = function (id: number): boolean {
-		return expandedCardId.value === id;
-	};
-
-	const toggleExpand = function (id: number): void {
-		if (expandedCardId.value === id) {
-			console.log("collapsing card");
-			expandedCardId.value = null;
-			return;
-		}
-
-		expandedCardId.value = id;
-	};
 
 	const fetchCards = async function (): Promise<void> {
 		loading.value = true;
@@ -140,7 +129,17 @@
 		}
 	};
 
-	onMounted(function () {
-		fetchCards();
-	});
+	const isExpanded = function (id: number): boolean {
+		return expandedCardId.value === id;
+	};
+
+	const toggleExpand = function (id: number): void {
+		if (expandedCardId.value === id) {
+			console.log("collapsing card");
+			expandedCardId.value = null;
+			return;
+		}
+
+		expandedCardId.value = id;
+	};
 </script>

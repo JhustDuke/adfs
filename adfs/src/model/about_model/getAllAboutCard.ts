@@ -3,9 +3,9 @@ import { appPool } from "../config";
 
 type AboutCardInterface = {
 	id: number;
-	title: string; // comes from caption
-	textContent: string;
-	imageSrc: string;
+	caption: string; // comes from caption
+	text_content: string;
+	image_url: string;
 };
 
 /**
@@ -22,10 +22,7 @@ export const getAllAboutCardsModel = async function (): Promise<
 		const [rows] = (await connection.query(
 			`
 			SELECT 
-				id,
-				caption AS title,
-				text_content AS textContent,
-				image_url AS imageSrc
+				id, caption AS title,image_url AS imageSrc,text_content AS textContent 
 			FROM ${DBTableNames.aboutTable}
 			`
 		)) as [AboutCardInterface[], unknown];

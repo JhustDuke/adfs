@@ -117,7 +117,7 @@
 			const formData = new FormData();
 
 			formData.append("caption", form.value.title);
-			formData.append("textContent", form.value.textContent);
+			formData.append("excerpts", form.value.textContent);
 
 			if (imageFile.value) {
 				formData.append("image", imageFile.value);
@@ -142,7 +142,7 @@
 
 			setTimeout(function () {
 				success.value = "";
-				window.location.reload();
+				//window.location.reload();
 			}, 6000);
 		} catch (e: any) {
 			error.value = e.message || "error creating card";

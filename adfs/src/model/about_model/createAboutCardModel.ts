@@ -12,6 +12,7 @@ interface CreateAboutCardInputInterface {
 
 const imagePath = imageDir.aboutImagePath;
 const uploadDir: string = path.join(process.cwd(), imagePath);
+
 export const createAboutCardModel = async function (
 	input: CreateAboutCardInputInterface
 ): Promise<void> {

@@ -1,18 +1,21 @@
 import { appPool } from "../config";
 import fs from "fs";
 import path from "path";
-import { ensureUploadDir, imageDir,DBTableNames } from "../../utils";
+import { ensureUploadDir, imageDir, DBTableNames } from "../../utils";
 
 interface UpdateAboutCardInputInterface {
 	id: number;
-	caption: string;
-	textContent: string;
+
+	caption?: string;
+	textContent?: string;
+
 	imageBuffer?: Buffer;
 	imageOriginalName?: string;
 }
 
 const imagePath = imageDir.aboutImagePath;
-const tableName=DBTableNames.aboutTable
+
+const tableName = DBTableNames.aboutTable;
 
 const uploadDir: string = path.join(process.cwd(), imagePath);
 
@@ -21,7 +24,7 @@ const extractFileName = function (url: string): string {
 };
 
 /**
- * PATCH ABOUT CARD (safe image handling + collision protection)
+ * PATCH ABOUT CARD (safe image handling + fallback protection)
  */
 export const updateAboutCardModel = async function (
 	input: UpdateAboutCardInputInterface
@@ -35,7 +38,11 @@ export const updateAboutCardModel = async function (
 
 		// get existing record
 		const [rows] = (await connection.query(
-			`SELECT id, image_url FROM ${tableName}  WHERE id = ?`,
+			`
+				SELECT *
+				FROM ${tableName}
+				WHERE id = ?
+			`,
 			[input.id]
 		)) as [any[], unknown];
 
@@ -43,20 +50,26 @@ export const updateAboutCardModel = async function (
 			throw new Error(`No about card found with id "${input.id}"`);
 		}
 
-		const existingImageUrl: string | null = rows[0]?.image_url;
+		const existingAboutCard = rows[0];
 
 		let newImageUrl: string | undefined;
 
-		// IMAGE UPDATE (optional)
+		// REFACTORED: optional image update handling
 		if (input.imageBuffer && input.imageOriginalName) {
 			const fileName = input.imageOriginalName;
+
 			const newPath = path.join(uploadDir, fileName);
+
 			newImageUrl = `${imagePath}/${fileName}`;
 
 			// collision check
 			if (fs.existsSync(newPath)) {
 				const [existingRows] = (await connection.query(
-					`SELECT id FROM ${tableName} WHERE image_url = ?`,
+					`
+						SELECT id
+						FROM ${tableName}
+						WHERE image_url = ?
+					`,
 					[newImageUrl]
 				)) as [any[], unknown];
 
@@ -70,8 +83,9 @@ export const updateAboutCardModel = async function (
 			}
 
 			// delete old image if different
-			if (existingImageUrl) {
-				const oldFileName = extractFileName(existingImageUrl);
+			if (existingAboutCard.image_url) {
+				const oldFileName = extractFileName(existingAboutCard.image_url);
+
 				const oldPath = path.join(uploadDir, oldFileName);
 
 				if (fs.existsSync(oldPath) && oldFileName !== fileName) {
@@ -83,24 +97,43 @@ export const updateAboutCardModel = async function (
 			fs.writeFileSync(newPath, input.imageBuffer);
 		}
 
-		// update DB
+		// REFACTORED: PATCH-style DB update with fallback
 		if (newImageUrl) {
 			await connection.query(
 				`
-				UPDATE ${tableName}
-				SET caption = ?, text_content = ?, image_url = ?
-				WHERE id = ?
+					UPDATE ${tableName}
+					SET
+						caption = ?,
+						text_content = ?,
+						image_url = ?
+					WHERE id = ?
 				`,
-				[input.caption, input.textContent, newImageUrl, input.id]
+				[
+					input.caption ?? existingAboutCard.caption,
+
+					input.textContent ?? existingAboutCard.text_content,
+
+					newImageUrl,
+
+					input.id,
+				]
 			);
 		} else {
 			await connection.query(
 				`
-				UPDATE ${tableName}
-				SET caption = ?, text_content = ?
-				WHERE id = ?
+					UPDATE ${tableName}
+					SET
+						caption = ?,
+						text_content = ?
+					WHERE id = ?
 				`,
-				[input.caption, input.textContent, input.id]
+				[
+					input.caption ?? existingAboutCard.caption,
+
+					input.textContent ?? existingAboutCard.text_content,
+
+					input.id,
+				]
 			);
 		}
 	} catch (error: any) {
@@ -112,6 +145,8 @@ export const updateAboutCardModel = async function (
 			`updateAboutCardModel failed: ${error.message || "unknown error"}`
 		);
 	} finally {
-		if (connection) connection.release();
+		if (connection) {
+			connection.release();
+		}
 	}
 };
