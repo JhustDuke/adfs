@@ -33,9 +33,9 @@
 
 <script setup>
 	import { ref, computed } from "vue";
-	import AddContent from "./addAcademicCard/addAcademicContent.vue";
+	import AddContent from "./createAcademicCard/createAcademicContent.vue";
 	import DeleteContent from "./delAcademicContent.vue";
-	import UpdateContent from "./updateAcademicContent.vue";
+	import UpdateContent from "./updateAcademicCard/updateAcademic.vue";
 	import AllContent from "./allAcademicContent.vue";
 
 	const tabs = [
