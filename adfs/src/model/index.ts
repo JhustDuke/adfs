@@ -14,3 +14,4 @@ export * from "./about_model/deleteAboutCardModel";
 export * from "./academic_model/createAcademicCardModel";
 export * from "./academic_model/getAllAcademicCardModel";
 export * from "./academic_model/updateAcademicModel";
+export * from "./academic_model/deleteAcademicModel";
