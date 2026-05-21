@@ -1,5 +1,6 @@
 // createNewsTable.ts
 import { appPool } from "../";
+import { DBTableNames } from "../../../utils";
 
 /**
  * Creates the news table
@@ -10,7 +11,7 @@ export const createNewsTable = async function (): Promise<void> {
 	try {
 		console.log("creating news_table.....");
 		await connection.query(`
-    CREATE TABLE IF NOT EXISTS news_table (
+    CREATE TABLE IF NOT EXISTS ${DBTableNames.newsTable} (
       id 
        INT AUTO_INCREMENT PRIMARY KEY,
       title 

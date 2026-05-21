@@ -1,4 +1,5 @@
 import { appPool } from "../";
+import { DBTableNames } from "../../../utils";
 
 export const createAboutCardsTable = async function (): Promise<void> {
 	const connection = await appPool.getConnection();
@@ -7,7 +8,7 @@ export const createAboutCardsTable = async function (): Promise<void> {
 		console.log("creating about_cards table...");
 
 		await connection.query(`
-			CREATE TABLE IF NOT EXISTS about_cards (
+			CREATE TABLE IF NOT EXISTS ${DBTableNames.aboutTable} (
 				id 
      INT AUTO_INCREMENT PRIMARY KEY,
 				caption 

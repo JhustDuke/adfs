@@ -1,4 +1,5 @@
 import { appPool } from "../";
+import { DBTableNames } from "../../../utils";
 
 /**
  * Creates the academic page table
@@ -10,7 +11,7 @@ export const createAcademicPageTable = async function (): Promise<void> {
 		console.log("creating academic_page_table...");
 
 		await connection.query(`
-			CREATE TABLE IF NOT EXISTS academic_page_table (
+			CREATE TABLE IF NOT EXISTS ${DBTableNames.academicTable} (
 				id
 					INT AUTO_INCREMENT PRIMARY KEY,
 				image_url
