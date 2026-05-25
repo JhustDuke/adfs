@@ -32,7 +32,7 @@
 							v-for="tab in tabs"
 							:key="tab.id"
 							@click="setActiveTab(tab.id)"
-							class="list-group-item list-group-item-action"
+							class="list-group-item list-group-item-action text-capitalize"
 							:class="{ 'grey lighten-2': activeTab === tab.id }">
 							{{ tab.label }}
 						</button>
@@ -66,12 +66,13 @@
 	import AcademicsManager from "./academicPageManager/academicManager.vue";
 	import GalleryManager from "./galleryPageManager/galleryManager.vue";
 	import AboutManager from "./aboutPageManager/aboutManager.vue";
-
+	import staffManager from "./staffManager/StaffManager.vue";
 	const tabs = [
-		{ id: "news", label: "News page" },
 		{ id: "academics", label: "Academic Page" },
-		{ id: "gallery", label: "Gallery page" },
 		{ id: "about", label: "about page" },
+		{ id: "gallery", label: "Gallery page" },
+		{ id: "staffs", label: "staff card" },
+		{ id: "news", label: "News page" },
 	];
 
 	//news is selected as the active component
@@ -79,10 +80,11 @@
 
 	//all the mountable components on the dashboard
 	const componentMap = {
-		news: NewsManager,
 		academics: AcademicsManager,
-		gallery: GalleryManager,
 		about: AboutManager,
+		gallery: GalleryManager,
+		staffs: staffManager,
+		news: NewsManager,
 	};
 
 	const setActiveTab = function (tabId) {

@@ -15,3 +15,9 @@ export * from "./academic_model/createAcademicCardModel";
 export * from "./academic_model/getAllAcademicCardModel";
 export * from "./academic_model/updateAcademicModel";
 export * from "./academic_model/deleteAcademicModel";
+
+//staff
+export * from "./staff/getAllStaffsModel";
+export * from "./staff/createStaffModel";
+export * from "./staff/updateStaffModel";
+export * from "./staff/deleteStaffModel";

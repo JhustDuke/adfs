@@ -1,4 +1,5 @@
 export const imageDir = {
-	academicImagesPath: "/images/academicPageImg",
-	aboutImagePath: "/images/aboutCardImg",
+	academicImagesPath: "/images/academicPageImages",
+	aboutImagePath: "/images/aboutCardImages",
+	staffImagePath: "/images/staffImages",
 };
