@@ -1,72 +1,181 @@
 <template>
-	<div>
-		<!-- TAB ROW -->
-		<div class="row mb-3">
-			<div class="col d-flex flex-wrap gap-2">
-				<button
-					v-for="tab in tabs"
-					:key="tab.id"
-					class="btn text-capitalize"
-					:class="{
-						'grey lighten-2': activeTab === tab.id && tab.id !== 'delete',
-						'red lighten-2 white-text':
-							activeTab === tab.id && tab.id === 'delete',
-					}"
-					@click="setActiveTab(tab.id)">
-					{{ tab.label }}
-				</button>
-			</div>
+	<div class="p-3">
+		<!-- ================= MODE SELECT ================= -->
+		<select
+			v-model="mode"
+			class="form-select mb-3">
+			<option value="all">All Gallery</option>
+			<option value="createNew">Create New Gallery</option>
+			<option value="addExisting">Add To Existing Gallery</option>
+			<option value="update">Update Gallery</option>
+			<option value="delete">Delete Gallery</option>
+		</select>
+
+		<!-- ================= LOADING ================= -->
+		<div
+			v-if="loading"
+			class="d-flex justify-content-center py-5">
+			<div class="spinner-border text-primary"></div>
 		</div>
 
-		<div class="row g-4">
-			<main class="col-12 col-lg-9">
-				<!-- dynamic component switcher -->
-				<keep-alive>
-					<component :is="currentComponent" />
-				</keep-alive>
-			</main>
+		<!-- ================= ERROR ================= -->
+		<div
+			v-else-if="error"
+			class="text-center py-5">
+			<p class="text-danger mb-3">{{ error }}</p>
+			<button
+				class="btn btn-primary"
+				@click="fetchGallery">
+				Retry
+			</button>
 		</div>
+
+		<!-- ================= CONTENT ================= -->
+		<template v-else>
+			<!-- ================= ALL GALLERIES ================= -->
+			<div
+				v-if="mode === 'all'"
+				class="row">
+				<div
+					v-if="!galleries.length"
+					class="text-center text-muted py-5 col-12">
+					No galleries available
+				</div>
+
+				<div
+					v-for="gallery in galleries"
+					:key="gallery.galleryDB_id"
+					class="col-12 col-md-6 mb-4">
+					<div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+						<!-- ========== CAROUSEL COMPONENT ========== -->
+						<GalleryCarousel
+							:images="gallery.images"
+							:carousel-id="`carousel-${gallery.galleryDB_id}`"
+							default-caption="Gallery image" />
+
+						<!-- ========== FOOTER ========== -->
+						<div class="card-body bg-white border-top">
+							<h3 class="h5 fw-bold mb-1">
+								{{ gallery.caption }}
+							</h3>
+
+							<p
+								v-if="gallery.date"
+								class="small text-muted mb-0">
+								{{ gallery.date }}
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- ================= CREATE NEW ================= -->
+			<CreateGallery
+				v-if="mode === 'createNew'"
+				@created="refreshAndReturn" />
+
+			<!-- ================= ADD EXISTING ================= -->
+			<AddExisting
+				v-if="mode === 'addExisting'"
+				:galleries="galleries"
+				@added="refreshAndReturn" />
+
+			<!-- ================= UPDATE ================= -->
+			<UpdateGallery
+				v-if="mode === 'update'"
+				:galleries="galleries"
+				@updated="refreshAndReturn" />
+
+			<!-- ================= DELETE ================= -->
+			<DeleteGallery
+				v-if="mode === 'delete'"
+				:galleries="galleries"
+				@deleted="refreshAndReturn" />
+		</template>
 	</div>
 </template>
 
-<script setup>
-	import { ref, computed } from "vue";
+<script setup lang="ts">
+	import { onMounted, ref } from "vue";
+	import GalleryCarousel from "./GalleryCarousel.vue";
+	import CreateGallery from "./CreateGalleryContent.vue";
+	import UpdateGallery from "./UpdateGalleryContent.vue";
+	import DeleteGallery from "./DeleteGalleryContent.vue";
+	import AddExisting from "./AddToExistingGallery.vue";
 
-	import AddGallery from "./addGalleryContent.vue";
-	import UpdateGallery from "./updateGalleryContent.vue";
-	import DeleteGallery from "./deleteGalleryContent.vue";
-	import AllGallery from "./allGalleryContent.vue";
+	import { type GalleryInterface, type ImageInterface } from "./types";
 
-	const tabs = [
-		{ id: "all", label: "all contents" },
-		{ id: "create", label: "add contents" },
-		{ id: "update", label: "update contents" },
-		{ id: "delete", label: "delete content" },
-	];
+	/* ================= MODE ================= */
+	type Mode = "all" | "createNew" | "addExisting" | "update" | "delete";
 
-	const activeTab = ref("all");
+	/* ================= STATE ================= */
+	const mode = ref<Mode>("all");
+	const galleries = ref<GalleryInterface[]>([]);
+	const loading = ref<boolean>(false);
+	const error = ref<string>("");
 
-	/* =========================================================
-	COMPONENT MAP
-	maps tab id → gallery manager component
-	========================================================= */
-
-	const componentMap = {
-		all: AllGallery,
-		create: AddGallery,
-		update: UpdateGallery,
-		delete: DeleteGallery,
-	};
-
-	/* =========================================================
-	TAB SWITCHER
-	========================================================= */
-
-	const setActiveTab = function (tabId) {
-		activeTab.value = tabId;
-	};
-
-	const currentComponent = computed(function () {
-		return componentMap[activeTab.value];
+	/* ================= INIT ================= */
+	onMounted(async function (): Promise<void> {
+		await fetchGallery();
 	});
+
+	/* ================= MOCK SERVICE ================= */
+	const imageService = {
+		async getImages(): Promise<ImageInterface[]> {
+			const baseUrl = "https://images.unsplash.com";
+
+			return [
+				{
+					url: `${baseUrl}/photo-1500530855697-b586d89ba3ee`,
+					subCaption: "Nature Scene",
+				},
+				{
+					url: `${baseUrl}/photo-1520975958225-5a0c5c6f9b8a`,
+					subCaption: "City Lights",
+				},
+				{
+					url: `${baseUrl}/photo-1519681393784-d120267933ba`,
+					subCaption: "Mountains View",
+				},
+			];
+		},
+	};
+
+	/* ================= FETCH ================= */
+	async function fetchGallery(): Promise<void> {
+		loading.value = true;
+		error.value = "";
+
+		try {
+			await new Promise((resolve) => setTimeout(resolve, 400));
+
+			const images = await imageService.getImages();
+
+			galleries.value = [
+				{
+					galleryDB_id: 1,
+					caption: "Nature Collection",
+					date: "2026-01-01",
+					images,
+				},
+				{
+					galleryDB_id: 2,
+					caption: "Urban Collection",
+					date: "2026-01-10",
+					images,
+				},
+			];
+		} catch (err: unknown) {
+			error.value =
+				err instanceof Error ? err.message : "Failed to load galleries";
+		} finally {
+			loading.value = false;
+		}
+	}
+
+	/* ================= REFRESH ================= */
+	async function refreshAndReturn(): Promise<void> {
+		mode.value = "all";
+		await fetchGallery();
+	}
 </script>

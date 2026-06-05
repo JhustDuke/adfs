@@ -3,5 +3,6 @@ export const DBTableNames = {
 	newsTable: "news_table",
 	academicTable: "academic_page_table",
 	staffTable: "staff_table",
-	gallery: "gallery_table",
+	galleryCollections: "gallery_table",
+	collectionImages: "gallery_photos",
 };

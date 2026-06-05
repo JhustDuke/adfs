@@ -64,7 +64,8 @@
 
 	import NewsManager from "./newsManager/newsManager.vue";
 	import AcademicsManager from "./academicPageManager/academicManager.vue";
-	import GalleryManager from "./galleryPageManager/galleryManager.vue";
+	// @ts-ignore
+	import GalleryManager from "./galleryPageManager/GalleryManager.vue";
 	import AboutManager from "./aboutPageManager/aboutManager.vue";
 	import staffManager from "./staffManager/StaffManager.vue";
 	const tabs = [
