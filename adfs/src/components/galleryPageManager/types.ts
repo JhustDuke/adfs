@@ -8,6 +8,8 @@ export interface GalleryInterface {
 	galleryDB_id: number;
 	caption: string;
 	date: string;
+	year: number;
+	month: string;
 	images: ImageInterface[];
 }
 

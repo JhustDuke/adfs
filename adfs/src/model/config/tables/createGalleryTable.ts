@@ -93,9 +93,9 @@ export const createImagesTable = async function (): Promise<void> {
 			)
 		`);
 
-		console.log("Gallery tables created successfully");
+		console.log("images tables created successfully");
 	} catch (err: any) {
-		console.error("Gallery table creation failed:", err.message);
+		console.error("images table creation failed:", err.message);
 		throw err;
 	} finally {
 		connection.release();

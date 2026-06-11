@@ -119,52 +119,15 @@
 		await fetchGallery();
 	});
 
-	/* ================= MOCK SERVICE ================= */
-	const imageService = {
-		async getImages(): Promise<ImageInterface[]> {
-			const baseUrl = "https://images.unsplash.com";
-
-			return [
-				{
-					url: `${baseUrl}/photo-1500530855697-b586d89ba3ee`,
-					subCaption: "Nature Scene",
-				},
-				{
-					url: `${baseUrl}/photo-1520975958225-5a0c5c6f9b8a`,
-					subCaption: "City Lights",
-				},
-				{
-					url: `${baseUrl}/photo-1519681393784-d120267933ba`,
-					subCaption: "Mountains View",
-				},
-			];
-		},
-	};
-
 	/* ================= FETCH ================= */
 	async function fetchGallery(): Promise<void> {
 		loading.value = true;
 		error.value = "";
-
 		try {
-			await new Promise((resolve) => setTimeout(resolve, 400));
-
-			const images = await imageService.getImages();
-
-			galleries.value = [
-				{
-					galleryDB_id: 1,
-					caption: "Nature Collection",
-					date: "2026-01-01",
-					images,
-				},
-				{
-					galleryDB_id: 2,
-					caption: "Urban Collection",
-					date: "2026-01-10",
-					images,
-				},
-			];
+			const res = await fetch("/api/gallery/getAllGallery");
+			const data = await res.json();
+			if (!res.ok) throw new Error(data.message);
+			galleries.value = data.data;
 		} catch (err: unknown) {
 			error.value =
 				err instanceof Error ? err.message : "Failed to load galleries";

@@ -21,3 +21,10 @@ export * from "./staff/getAllStaffsModel";
 export * from "./staff/createStaffModel";
 export * from "./staff/updateStaffModel";
 export * from "./staff/deleteStaffModel";
+
+//gallery
+export * from "./gallery_model/createGalleryModel";
+export * from "./gallery_model/updateGalleryModel";
+export * from "./gallery_model/getAllGalleryModel";
+export * from "./gallery_model/addToExistingModel";
+export * from "./gallery_model/deleteGalleryModel";
