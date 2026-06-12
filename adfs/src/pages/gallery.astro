@@ -9,67 +9,93 @@ let galleryItems: any[] = [];
 let error: string | null = null;
 
 try {
-  const res = await fetch(galleryUrl);
+	const res = await fetch(galleryUrl);
 
-  if (!res.ok) {
-    error = "bad response";
-  } else {
-    const body = await res.json();
+	if (!res.ok) {
+		console.log("gallery: bad response");
+		error = "request failed";
+	} else {
+		const text = await res.text();
 
-    const data = body?.data;
+		if (!text) {
+			console.log("gallery: empty body");
+			error = "empty response";
+		} else {
+			try {
+				const body = JSON.parse(text);
 
-    if (!Array.isArray(data) || data.length === 0) {
-      galleryItems = [];
-    } else {
-      galleryItems = data;
-    }
-  }
+				const data = body?.data;
+
+				if (Array.isArray(data) && data.length > 0) {
+					galleryItems = data;
+				} else {
+					galleryItems = [];
+				}
+
+				if (body?.error) {
+					error = body.error;
+				}
+			} catch (e) {
+				console.log("gallery: invalid json");
+				error = "invalid json";
+			}
+		}
+	}
 } catch (e) {
-  error = "fetch failed";
+	console.log("gallery: fetch failed");
+	error = "fetch failed";
 }
 ---
 
 <BaseLayout title="School Gallery">
-  <div class="container my-5">
+	<div class="container my-5">
 
-    <div class="text-center mb-5">
-      <h1 class="display-4 fw-bold indigo-text text-darken-4">
-        Memories & Milestones
-      </h1>
-    </div>
+		<div class="text-center mb-5">
+			<h1 class="display-4 fw-bold indigo-text text-darken-4">
+				Memories & Milestones
+			</h1>
+		</div>
 
-    <!-- EMPTY STATE -->
-    {!error && galleryItems.length === 0 && (
-      <div class="text-center text-muted">
-        <!-- fallback: no gallery items -->
-        No data to display at the moment
-      </div>
-    )}
+		<!-- fallback: error state -->
+		{error && (
+			<div class="text-center text-muted">
+				<!-- fallback: server / fetch issue -->
+				No data to display at the moment
+			</div>
+		)}
 
-    <!-- DATA -->
-    {!error && galleryItems.length > 0 && (
-      <div class="row g-4">
-        {galleryItems.map(function (folder: any) {
-          return (
-            <GalleryCard
-              id={folder.galleryDB_id}
-              caption={folder.caption}
-              date={folder.date}
-              images={folder.images}
-            />
-          );
-        })}
-      </div>
-    )}
+		<!-- fallback: empty state -->
+		{!error && galleryItems.length === 0 && (
+			<div class="text-center text-muted">
+				<!-- fallback: valid response but no data -->
+				No data to display at the moment
+			</div>
+		)}
 
-    <!-- BACK BUTTON -->
-    <div class="row mt-5 pt-4 border-top">
-      <div class="col-12 text-center">
-        <a href="/academics" class="btn btn-outline-primary rounded-pill px-4">
-          Back
-        </a>
-      </div>
-    </div>
+		<!-- data -->
+		{!error && galleryItems.length > 0 && (
+			<div class="row g-4">
+				{galleryItems.map(function (folder: any) {
+					return (
+						<GalleryCard
+							id={folder.galleryDB_id}
+							caption={folder.caption}
+							date={folder.date}
+							images={folder.images}
+						/>
+					);
+				})}
+			</div>
+		)}
 
-  </div>
+		<!-- back button always visible -->
+		<div class="row mt-5 pt-4 border-top">
+			<div class="col-12 text-center">
+				<a href="/academics" class="btn btn-outline-primary rounded-pill px-4">
+					Back
+				</a>
+			</div>
+		</div>
+
+	</div>
 </BaseLayout>

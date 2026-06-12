@@ -9,62 +9,89 @@ let academicPillars: any[] = [];
 let error: string | null = null;
 
 try {
-  const res = await fetch(url);
+	const res = await fetch(url);
 
-  if (!res.ok) {
-    error = "bad response";
-  } else {
-    const body = await res.json();
-    const data = body?.data;
+	if (!res.ok) {
+		console.log("academic: bad response");
+		error = "request failed";
+	} else {
+		const text = await res.text();
 
-    if (Array.isArray(data)) {
-      academicPillars = data;
-    } else {
-      academicPillars = [];
-    }
-  }
+		if (!text) {
+			console.log("academic: empty body");
+			error = "empty response";
+		} else {
+			try {
+				const body = JSON.parse(text);
+
+				const data = body?.data;
+
+				if (Array.isArray(data) && data.length > 0) {
+					academicPillars = data;
+				} else {
+					academicPillars = [];
+				}
+
+				if (body?.error) {
+					error = body.error;
+				}
+			} catch (e) {
+				console.log("academic: invalid json");
+				error = "invalid json";
+			}
+		}
+	}
 } catch (e) {
-  error = "fetch failed";
+	console.log("academic: fetch failed");
+	error = "fetch failed";
 }
 ---
 
 <BaseLayout title="Academics | Our Curriculum">
-  <div class="container my-5">
+	<div class="container my-5">
 
-    <!-- HEADER -->
-    <div class="row mb-5 text-center">
-      <div class="col-12">
-        <h1 class="display-4 fw-bold indigo-text text-darken-4">
-          Our Academic Pillars
-        </h1>
-      </div>
-    </div>
+		<!-- HEADER -->
+		<div class="row mb-5 text-center">
+			<div class="col-12">
+				<h1 class="display-4 fw-bold indigo-text text-darken-4">
+					Our Academic Pillars
+				</h1>
+			</div>
+		</div>
 
-    <!-- EMPTY STATE -->
-    {!error && academicPillars.length === 0 && (
-      <div class="text-center text-muted">
-        <!-- fallback: no academic data -->
-        No data to display at the moment
-      </div>
-    )}
+		<!-- ERROR STATE -->
+		{error && (
+			<div class="text-center text-muted">
+				<!-- fallback: server/fetch error -->
+				No data to display at the moment
+			</div>
+		)}
 
-    <!-- DATA -->
-    {!error && academicPillars.length > 0 && (
-      <div class="row">
-        {academicPillars.map(function (item) {
-          return (
-            <SubjectCard
-              id={item.id}
-              title={item.title}
-              imageSrc={item.imageSrc}
-              description={item.textContent}
-              captionColor={item.textCaptionColor}
-              bgColor={item.bgColor}
-            />
-          );
-        })}
-      </div>
-    )}
+		<!-- EMPTY STATE -->
+		{!error && academicPillars.length === 0 && (
+			<div class="text-center text-muted">
+				<!-- fallback: valid response but empty -->
+				No data to display at the moment
+			</div>
+		)}
 
-  </div>
+		<!-- DATA -->
+		{!error && academicPillars.length > 0 && (
+			<div class="row">
+				{academicPillars.map(function (item) {
+					return (
+						<SubjectCard
+							id={item.id}
+							title={item.title}
+							imageSrc={item.imageSrc}
+							description={item.textContent}
+							captionColor={item.textCaptionColor}
+							bgColor={item.bgColor}
+						/>
+					);
+				})}
+			</div>
+		)}
+
+	</div>
 </BaseLayout>
