@@ -1,10 +1,11 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import NewsCard from "../layouts/newsCard.astro";
+import {urlStringObj}from './urls'
 
-const url = new URL("/api/news/getAllNews", Astro.request.url);
+const newsUrl = new URL(urlStringObj.newsUrl, Astro.request.url);
 
-const res = await fetch(url);
+const res = await fetch(newsUrl);
 
 if (!res.ok) {
 	console.log("early return: bad response");
