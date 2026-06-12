@@ -9,7 +9,6 @@
 					<label class="fw-bold small grey-text text-darken-1">
 						SELECT SECTION
 					</label>
-
 					<select
 						class="form-select border-2"
 						:value="activeTab"
@@ -21,12 +20,20 @@
 							{{ tab.label }}
 						</option>
 					</select>
+					<!-- MOBILE LOGOUT BUTTON -->
+					<button
+						@click="handleLogout"
+						class="btn btn-outline-danger btn-sm w-100 mt-2"
+						:disabled="isLoggingOut">
+						<span
+							v-if="isLoggingOut"
+							class="spinner-border spinner-border-sm me-1"></span>
+						{{ isLoggingOut ? "Logging out..." : "Logout" }}
+					</button>
 				</div>
-
 				<!-- DESKTOP SIDEBAR -->
 				<div class="card border-0 shadow-sm d-none d-lg-block">
 					<div class="card-header indigo darken-4 white-text"> Management </div>
-
 					<div class="list-group list-group-flush">
 						<button
 							v-for="tab in tabs"
@@ -36,13 +43,25 @@
 							:class="{ 'grey lighten-2': activeTab === tab.id }">
 							{{ tab.label }}
 						</button>
+						<!-- DESKTOP LOGOUT BUTTON -->
+						<button
+							@click="handleLogout"
+							class="list-group-item list-group-item-action text-danger fw-bold"
+							:disabled="isLoggingOut">
+							<span
+								v-if="isLoggingOut"
+								class="spinner-border spinner-border-sm me-1"></span>
+							<i
+								v-else
+								class="bi bi-box-arrow-right me-2"></i>
+							{{ isLoggingOut ? "Logging out..." : "Logout" }}
+						</button>
 					</div>
 				</div>
 			</aside>
-
 			<!-- ==============================
-			MAIN CONTENT AREA
-			============================== -->
+   MAIN CONTENT AREA
+   ============================== -->
 			<main class="col-12 col-lg-9 black">
 				<div
 					class="card shadow-sm border-0"
@@ -61,13 +80,13 @@
 
 <script setup>
 	import { ref, computed } from "vue";
-
 	import NewsManager from "./newsManager/newsManager.vue";
 	import AcademicsManager from "./academicPageManager/academicManager.vue";
 	// @ts-ignore
 	import GalleryManager from "./galleryPageManager/GalleryManager.vue";
 	import AboutManager from "./aboutPageManager/aboutManager.vue";
 	import staffManager from "./staffManager/StaffManager.vue";
+
 	const tabs = [
 		{ id: "academics", label: "Academic Page" },
 		{ id: "about", label: "about page" },
@@ -76,10 +95,22 @@
 		{ id: "news", label: "News page" },
 	];
 
-	//news is selected as the active component
+	/* =========================================================
+ ACTIVE TAB STATE
+ news is selected as the default active component
+ ========================================================= */
 	const activeTab = ref("news");
 
-	//all the mountable components on the dashboard
+	/* =========================================================
+ LOGOUT STATE
+ Controls the loading spinner on the logout button
+ ========================================================= */
+	const isLoggingOut = ref(false);
+
+	/* =========================================================
+ COMPONENT MAP
+ All mountable components on the dashboard
+ ========================================================= */
 	const componentMap = {
 		academics: AcademicsManager,
 		about: AboutManager,
@@ -92,13 +123,39 @@
 		activeTab.value = tabId;
 	};
 
-	//this code auto switches component based on the activeTabValue
+	/* =========================================================
+ CURRENT COMPONENT
+ Auto switches component based on the activeTab value
+ ========================================================= */
 	const currentComponent = computed(function () {
 		return componentMap[activeTab.value];
 	});
 
-	//this would only work for mobile screens select
+	/* =========================================================
+ HANDLE TAB CHANGE
+ Only works for mobile screen select
+ ========================================================= */
 	const handleTabChange = function (event) {
 		activeTab.value = event.target.value;
+	};
+
+	/* =========================================================
+ LOGOUT HANDLER
+ Calls the logout endpoint, clears the session cookie
+ server-side, then redirects to /login
+ ========================================================= */
+	const handleLogout = async function () {
+		isLoggingOut.value = true;
+
+		try {
+			await fetch("/api/auth/logout", { method: "POST" });
+		} finally {
+			/* ---------------------------------------------------
+   Redirect regardless of fetch result
+   Even if the request fails, send the user to /login
+   The middleware will block /dashboard access anyway
+   --------------------------------------------------- */
+			window.location.href = "/login";
+		}
 	};
 </script>

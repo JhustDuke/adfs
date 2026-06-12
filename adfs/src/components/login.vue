@@ -35,30 +35,30 @@
 				<!-- submit.prevent stops page refresh -->
 				<form @submit.prevent="handleLogin">
 					<!-- ==================================================
-              PHONE NUMBER INPUT FIELD
+              USERNAME INPUT FIELD
               ================================================== -->
 					<div class="mb-4">
 						<!-- Field label -->
 						<label class="form-label small fw-bold indigo-text text-darken-4">
-							PHONE NUMBER
+							USERNAME
 						</label>
 
 						<!-- Input group with icon -->
 						<!-- border-primary appears when user starts typing -->
 						<div
 							class="input-group border-bottom border-2 transition-focus"
-							:class="{ 'border-primary': phone }">
-							<!-- Phone icon -->
+							:class="{ 'border-primary': username }">
+							<!-- Person icon -->
 							<span class="input-group-text bg-transparent border-0 px-0 me-2">
-								<i class="bi bi-phone grey-text"></i>
+								<i class="bi bi-person grey-text"></i>
 							</span>
 
-							<!-- Phone input -->
+							<!-- Username input -->
 							<input
-								v-model="phone"
-								type="tel"
+								v-model="username"
+								type="text"
 								class="form-control border-0 shadow-none ps-0"
-								placeholder="080XXXXXXXX"
+								placeholder="Enter your username"
 								required />
 						</div>
 					</div>
@@ -147,10 +147,10 @@
   ========================================================= */
 
 	/*
-phone
-Stores the phone number entered by the user
+username
+Stores the username entered by the user
 */
-	const phone = ref("");
+	const username = ref("");
 
 	/*
 password
@@ -185,11 +185,10 @@ Stores and displays login error messages
 		/* -----------------------------------------------------
       STEP 2
       Basic client-side validation
-      Ensures phone number is valid length
+      Ensures username is not empty
       ----------------------------------------------------- */
-		if (phone.value.length < 10) {
-			errorMessage.value = "Please enter a valid phone number.";
-
+		if (!username.value.trim()) {
+			errorMessage.value = "Please enter your username.";
 			return;
 		}
 
@@ -201,39 +200,46 @@ Stores and displays login error messages
 
 		try {
 			/* -------------------------------------------------
-          PLACEHOLDER API CALL
-          Replace with real backend authentication later
+          STEP 4
+          POST credentials to the auth endpoint
           ------------------------------------------------- */
-
-			console.log("Attempting login for:", phone.value);
-
-			/*
-       Simulated network delay
-       This mimics an API request
-       */
-			await new Promise(function (resolve) {
-				setTimeout(resolve, 2000);
+			const res = await fetch("/api/auth/login", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					username: username.value,
+					password: password.value,
+				}),
 			});
 
-			/* -------------------------------------------------
-          STEP 4
-          Login success logic
-          Redirect user to admin dashboard
-          ------------------------------------------------- */
-			window.location.href = "/admin";
-		} catch (err) {
+			const data = await res.json();
+
 			/* -------------------------------------------------
           STEP 5
-          Error handling
-          This would handle:
-          - wrong password
-          - network error
-          - server error
+          Handle failed login response
           ------------------------------------------------- */
-			errorMessage.value = "Invalid credentials. Please try again.";
-		} finally {
+			if (!res.ok) {
+				errorMessage.value =
+					data.message || "Invalid credentials. Please try again.";
+				return;
+			}
+
 			/* -------------------------------------------------
           STEP 6
+          Login success — redirect to dashboard
+          Full page navigation so middleware re-evaluates
+          the session cookie
+          ------------------------------------------------- */
+			window.location.href = "/dashboard";
+		} catch {
+			/* -------------------------------------------------
+          STEP 7
+          Network or unexpected error handling
+          ------------------------------------------------- */
+			errorMessage.value = "Something went wrong. Please try again.";
+		} finally {
+			/* -------------------------------------------------
+          STEP 8
           Disable loading spinner regardless of result
           ------------------------------------------------- */
 			isLoading.value = false;
@@ -246,10 +252,6 @@ Stores and displays login error messages
   CUSTOM STYLING
   UI tweaks and animations
   ========================================================= */
-
-	/* ---------------------------------------------------------
-  Uppercase heading style
-  --------------------------------------------------------- */
 
 	/* ---------------------------------------------------------
   Input focus transition
