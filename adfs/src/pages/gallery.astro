@@ -3,21 +3,30 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import GalleryCard from "../layouts/galleryCard.astro";
 import { urlStringObj } from "./urls";
 
-const galleryUrl: URL = new URL(urlStringObj.galleryUrl, Astro.request.url);
-const galleryRes: Response = await fetch(galleryUrl);
+const galleryUrl = new URL(urlStringObj.galleryUrl, Astro.request.url);
 
-if (!galleryRes.ok) {
-  const error: { message?: string } = await galleryRes.json();
-  throw new Error(error.message || "failed to fetch gallery data");
+let galleryItems: any[] = [];
+let error: string | null = null;
+
+try {
+  const res = await fetch(galleryUrl);
+
+  if (!res.ok) {
+    error = "bad response";
+  } else {
+    const body = await res.json();
+
+    const data = body?.data;
+
+    if (!Array.isArray(data) || data.length === 0) {
+      galleryItems = [];
+    } else {
+      galleryItems = data;
+    }
+  }
+} catch (e) {
+  error = "fetch failed";
 }
-
-const galleryResponseBody = await galleryRes.json();
-
-if (!galleryResponseBody?.data?.length) {
-  throw new Error("gallery response is empty");
-}
-
-const galleryItems = galleryResponseBody.data;
 ---
 
 <BaseLayout title="School Gallery">
@@ -27,14 +36,20 @@ const galleryItems = galleryResponseBody.data;
       <h1 class="display-4 fw-bold indigo-text text-darken-4">
         Memories & Milestones
       </h1>
-      <p class="lead grey-text text-darken-2">
-        A glimpse into daily life at our school.
-      </p>
     </div>
 
-    <div class="row g-4">
-      {
-        galleryItems.map(function (folder: any) {
+    <!-- EMPTY STATE -->
+    {!error && galleryItems.length === 0 && (
+      <div class="text-center text-muted">
+        <!-- fallback: no gallery items -->
+        No data to display at the moment
+      </div>
+    )}
+
+    <!-- DATA -->
+    {!error && galleryItems.length > 0 && (
+      <div class="row g-4">
+        {galleryItems.map(function (folder: any) {
           return (
             <GalleryCard
               id={folder.galleryDB_id}
@@ -43,14 +58,15 @@ const galleryItems = galleryResponseBody.data;
               images={folder.images}
             />
           );
-        })
-      }
-    </div>
+        })}
+      </div>
+    )}
 
+    <!-- BACK BUTTON -->
     <div class="row mt-5 pt-4 border-top">
       <div class="col-12 text-center">
         <a href="/academics" class="btn btn-outline-primary rounded-pill px-4">
-          <i class="bi bi-arrow-left me-2"></i> Back to Academics
+          Back
         </a>
       </div>
     </div>

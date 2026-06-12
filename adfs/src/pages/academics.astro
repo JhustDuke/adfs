@@ -3,93 +3,68 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import SubjectCard from "../layouts/subjectsCard.astro";
 import { urlStringObj } from "./urls";
 
-const url: URL = new URL(
-  urlStringObj.academicUrl,
-  Astro.request.url
-);
+const url = new URL(urlStringObj.academicUrl, Astro.request.url);
 
-const res: Response = await fetch(url);
+let academicPillars: any[] = [];
+let error: string | null = null;
 
-if (!res.ok) {
-  const error: { message?: string } = await res.json();
-  throw new Error(error.message || "failed to get academic page");
+try {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    error = "bad response";
+  } else {
+    const body = await res.json();
+    const data = body?.data;
+
+    if (Array.isArray(data)) {
+      academicPillars = data;
+    } else {
+      academicPillars = [];
+    }
+  }
+} catch (e) {
+  error = "fetch failed";
 }
-
-const responseBody: {
-  message: string;
-  data: Array<{
-    id: number;
-    title: string;
-    textContent: string;
-    imageSrc: string;
-    textCaptionColor: string;
-    bgColor: string;
-  }>;
-} = await res.json();
-
-if (!responseBody?.data?.length) {
-  throw new Error("empty response");
-}
-
-console.log("ACADEMIC PAGE DATA");
-console.dir(responseBody, { depth: null });
-
-const academicPillars = responseBody.data.map(function (item) {
-  return {
-    id:item.id,
-    title: item.title,
-    imageSrc: item.imageSrc,
-    description: item.textContent,
-    captionColor: item.textCaptionColor,
-    bgColor: item.bgColor
-  };
-});
 ---
 
 <BaseLayout title="Academics | Our Curriculum">
   <div class="container my-5">
+
+    <!-- HEADER -->
     <div class="row mb-5 text-center">
       <div class="col-12">
         <h1 class="display-4 fw-bold indigo-text text-darken-4">
           Our Academic Pillars
         </h1>
-        <p class="lead grey-text text-darken-2 mx-auto" style="max-width: 800px;">
-          We provide a holistic learning experience designed to ignite curiosity and foster excellence.
-        </p>
       </div>
     </div>
 
-    <div class="row">
-     
-      {academicPillars.map(function (item) {
-        return (
-          <>
-            <Fragment set:html={`<!-- card ${item.title} start -->`} />
+    <!-- EMPTY STATE -->
+    {!error && academicPillars.length === 0 && (
+      <div class="text-center text-muted">
+        <!-- fallback: no academic data -->
+        No data to display at the moment
+      </div>
+    )}
+
+    <!-- DATA -->
+    {!error && academicPillars.length > 0 && (
+      <div class="row">
+        {academicPillars.map(function (item) {
+          return (
             <SubjectCard
               id={item.id}
               title={item.title}
               imageSrc={item.imageSrc}
-              description={item.description}
-              captionColor={item.captionColor}
+              description={item.textContent}
+              captionColor={item.textCaptionColor}
               bgColor={item.bgColor}
             />
-            <Fragment set:html={`<!-- card ${item.title} end -->`} />
-          </>
-        );
-      })}    </div>
-
-    <div class="row mt-5">
-      <div class="col-12 text-center p-5 bg-light rounded-4 shadow-sm border">
-        <h2 class="fw-bold indigo-text text-darken-3">
-          Want to see our students in action?
-        </h2>
-        <p class="mb-4">
-          Visit our full gallery to see highlights from all our departments.
-        </p>
-        <a href="/gallery" class="btn btn-primary btn-lg rounded-pill px-5 shadow">
-          Explore Full Gallery
-        </a>
+          );
+        })}
       </div>
-    </div>
+    )}
+
   </div>
 </BaseLayout>
