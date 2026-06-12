@@ -1,4 +1,5 @@
 export interface AboutSectionCardProps {
+	id: string;
 	title: string;
 	textContent: string;
 	imageSrc: string;

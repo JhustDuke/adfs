@@ -2,141 +2,131 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Card from "../layouts/aboutCard.astro";
 import StaffsCarousel from "../layouts/staffCarousel.astro";
+import { urlStringObj } from "./urls";
 
-// Define the staff data array
-const schoolStaffs  = [
-  //proprietor
-  { 
-    imgSrc: "/images/staff/proprietor.png",
-    caption: "Dr. A. Michael",
-    subCaption: "Proprietor"
-  },
-  //director 2
-  { 
-    imgSrc: "/images/staff/director_1.jpeg",
-    caption: "Mr A. Ignatius ",
-    subCaption: "Director-1"
-  }, 
+/* ================= ABOUT API ================= */
+const aboutUrl: URL = new URL(
+  urlStringObj.aboutUrl,
+  Astro.request.url
+);
 
-//director
-  { 
-    imgSrc: "/images/staff/director-2.jpeg",
-    caption: "Mrs. E. N.",
-    subCaption: "Director-2"
-  },
-  //admin
-  { 
-    imgSrc: "/images/staff/admin.jpeg",
-    caption: "Mrs. J. Madu",
-    subCaption: "Admin"
-  },
-  //Eze
-  { 
-    imgSrc: "/images/staff/eze.png",
-    caption: "Mrs. P. Eze",
-    subCaption: "Secretary"
-  },
-  //edith
-  { 
-    imgSrc: "/images/staff/head-teacher.jpg",
-    caption: "Mrs. I. Edith ",
-    subCaption: "Head Teacher"
-  },
-  //oguguo
-  { 
-    imgSrc: "/images/staff/oguguo.jpg",
-    caption: "Mrs. L. Oguguo ",
-    subCaption: "Staff"
-  },
-  //ella
-  { 
-    imgSrc: "/images/staff/ella1.png",
-    caption: "Miss C. Ella",
-    subCaption: "Staff"
-  },
-  { 
-    imgSrc: "/images/staff/onyi.jpeg",
-    caption: "Miss L. Onyinye",
-    subCaption: "Staff"
-  },
-  
-  //nonye
-  { 
-    imgSrc: "/images/staff/nonye.jpeg",
-    caption: "Miss S. Nonye",
-    subCaption: "Staff"
-  },
-  // joy
-  { 
-    imgSrc: "/images/staff/ij.jpeg",
-    caption: "Miss J. Opara",
-    subCaption: "Staff"
-  },
-  // Queen
-  { 
-    imgSrc: "/images/staff/queen.jpeg",
-    caption: "Mrs. Queen",
-    subCaption: "Staff"
-  },
-  // chukwu
-  { 
-    imgSrc: "/images/staff/chukwu.jpeg",
-    caption: "Mrs. Chukwu",
-    subCaption: "Staff"
-  },
-  //Mma
-  { 
-    imgSrc: "/images/staff/mma.jpeg",
-    caption: "Mrs. C. Chidinmma",
-    subCaption: "Staff"
-  },
-];
+const aboutRes: Response = await fetch(aboutUrl);
+
+if (!aboutRes.ok) {
+  const error: { message?: string } = await aboutRes.json();
+  throw new Error(error.message || "failed to get about page");
+}
+
+const aboutResponseBody: {
+  message: string;
+  data: Array<{
+    id: number;
+    title: string;
+    textContent: string;
+    imageSrc: string;
+  }>;
+} = await aboutRes.json();
+
+
+if (!aboutResponseBody?.data?.length) {
+  throw new Error("about response is empty");
+}
+
+const aboutCards = aboutResponseBody.data.map(function (item) {
+  return {
+    id: item.id,
+    title: item.title,
+    textContent: item.textContent,
+    imageSrc: item.imageSrc
+  };
+});
+
+/* ================= STAFF API (NEW) ================= */
+const staffUrl: URL = new URL(
+  urlStringObj.staffsUrl,
+  Astro.request.url
+);
+
+const staffRes: Response = await fetch(staffUrl);
+
+if (!staffRes.ok) {
+  const error: { message?: string } = await staffRes.json();
+  throw new Error(error.message || "failed to get staff data");
+}
+
+const staffResponseBody = await staffRes.json();
+
+console.log("STAFF API:");
+console.dir(staffResponseBody, { depth: null });
+
+let staffMembers = [];
+
+if (staffResponseBody?.data?.length) {
+  staffMembers = staffResponseBody.data.map(function (staff) {
+    return {
+      imgSrc: staff.image_url || staff.imageSrc,
+      caption: staff.name || staff.title,
+      subCaption: staff.role || staff.subCaption || "Staff"
+    };
+  });
+} else {
+  throw new Error("staff response is empty");
+}
 ---
 
 <BaseLayout title="About Our School">
 
   <div class="container my-5">
+
+    <!-- ================= HEADER ================= -->
     <div class="row mb-5">
       <div class="col-12 text-center">
-        <h1 class="display-4 fw-bold indigo-text text-darken-4">Nurturing Young Minds</h1>
+        <h1 class="display-4 fw-bold indigo-text text-darken-4">
+          Nurturing Young Minds
+        </h1>
+
         <p class="lead grey-text text-darken-2">
           Providing a foundation of excellence for every pupil in our care.
         </p>
       </div>
     </div>
 
+    <!-- ================= ABOUT CARDS ================= -->
     <div class="row">
-      <Card 
-        title="Our Vision" 
-        textContent="To be a beacon of primary education where every pupil feels inspired to explore their potential. We envision a future where our young learners transition to the next stage of life as confident, empathetic, and curious individuals, equipped with the resilience to thrive in an ever-changing world."
-        imageSrc="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=600&q=80"
-        bgColor="blue lighten-5"
-      />
-      
-      <Card 
-        title="Our Mission" 
-        textContent="Our mission is to provide a safe, inclusive, and stimulating environment that fosters a love for learning. We are dedicated to delivering a balanced curriculum that prioritizes the holistic development of our pupils—academically, socially, and emotionally—while celebrating the unique talents of every child."
-        imageSrc="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80"
-        bgColor="teal lighten-5"
-      />
-
-      <Card 
-        title="Core Values" 
-        textContent="At the heart of our school are the values of Kindness, Integrity, and Growth. We teach our pupils the importance of respect for others, the courage to be honest, and the joy of continuous improvement. Through collaborative play and structured learning, we build a community of lifelong learners."
-        imageSrc="https://images.unsplash.com/photo-1544365313-094ba92415be?auto=format&fit=crop&w=600&q=80"
-        bgColor="amber lighten-5"
-      />
+      {
+        aboutCards.map(function (card) {
+          return (
+            <Card
+              id={card.id}
+              title={card.title}
+              textContent={card.textContent}
+              imageSrc={card.imageSrc}
+            />
+          );
+        })
+      }
     </div>
 
+    <!-- ================= STAFF SECTION ================= -->
     <div class="row mt-5 pt-4">
+
       <div class="col-12 text-center mb-4">
-        <h2 class="fw-bold indigo-text text-darken-4">Meet Our Dedicated Staff</h2>
-        <hr class="mx-auto" style="width: 50px; height: 3px; background: #1a237e;">
+        <h2 class="fw-bold indigo-text text-darken-4">
+          Meet Our Dedicated Staff
+        </h2>
+
+        <hr
+          class="mx-auto"
+          style="width: 50px; height: 3px; background: #1a237e;"
+        />
       </div>
+
       <div class="col-12">
-        <StaffsCarousel AllStaffMembers={schoolStaffs} />
+        <StaffsCarousel AllStaffMembers={staffMembers} />
       </div>
+
     </div>
 
   </div>
+
 </BaseLayout>

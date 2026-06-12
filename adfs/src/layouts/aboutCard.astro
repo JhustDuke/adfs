@@ -1,8 +1,7 @@
 ---
 import type { AboutSectionCardProps } from "../interfaces";
-
-// "white" and "black-text" are the defaults if you don't pass anything
-const { 
+const {
+  id,
   title, 
   textContent, 
   imageSrc, 
@@ -10,11 +9,9 @@ const {
   textColor = "black-text",
   btnColor = "blue-text" 
 } = Astro.props as AboutSectionCardProps
-
-const cardId = `card-${Math.random().toString(36).substring(2, 7)}`;
 ---
 
-<div class="col-12 col-md-4 p-3" id={cardId}>
+<div class="col-12 col-md-4 p-3" id={`card-${id}`}>
   <div class={`card h-100 shadow-sm border-0 ${bgColor}`}>
     
     <div class="position-relative">
@@ -25,7 +22,7 @@ const cardId = `card-${Math.random().toString(36).substring(2, 7)}`;
     </div>
 
     <div class="card-body position-relative">
-      <div class={`content-wrapper truncate-text ${textColor}`}>
+      <div class={`content-wrapper ${textColor}`} style="height: 60px; overflow: hidden;">
         {textContent}
       </div>
       <div class="text-fade"></div>
@@ -36,19 +33,33 @@ const cardId = `card-${Math.random().toString(36).substring(2, 7)}`;
         Read More
       </button>
     </div>
+
   </div>
 </div>
 
-<style>
-  .truncate-text {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    transition: all 0.3s ease;
-  }
+<script is:inline define:vars={{ id }}>
+  const container = document.getElementById(`card-${id}`);
+  if (container) {
+    const btn = container.querySelector(".toggle-btn");
+    const wrapper = container.querySelector(".content-wrapper");
+    let isExpanded = false;
 
-  /* Fade effect to white by default */
+    btn?.addEventListener("click", function () {
+      if (isExpanded) {
+        wrapper.style.height = "60px";
+        wrapper.style.overflow = "hidden";
+        btn.textContent = "Read More";
+      } else {
+        wrapper.style.height = "auto";
+        wrapper.style.overflow = "visible";
+        btn.textContent = "Read Less";
+      }
+      isExpanded = !isExpanded;
+    });
+  }
+</script>
+
+<style>
   .text-fade {
     position: absolute;
     bottom: 0; left: 0; right: 0;
@@ -56,25 +67,4 @@ const cardId = `card-${Math.random().toString(36).substring(2, 7)}`;
     background: linear-gradient(transparent, rgba(255, 255, 255, 0.8));
     pointer-events: none;
   }
-
-  .expanded .truncate-text {
-    display: block;
-    -webkit-line-clamp: initial;
-    overflow: visible;
-  }
-  
-  .expanded .text-fade {
-    display: none;
-  }
 </style>
-
-<script is:inline define:vars={{ cardId }}>
-  const container = document.getElementById(cardId);
-  const btn = container?.querySelector('.toggle-btn');
-  const card = container?.querySelector('.card');
-
-  btn?.addEventListener('click', () => {
-    const isExpanded = card.classList.toggle('expanded');
-    btn.textContent = isExpanded ? 'Read Less' : 'Read More';
-  });
-</script>
