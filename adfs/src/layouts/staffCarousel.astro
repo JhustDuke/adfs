@@ -40,10 +40,10 @@ const { AllStaffMembers, id = "staffCarousel" } = Astro.props as staffCarouselIn
               />
 
               <div class="carousel-caption d-md-block bg-dark bg-opacity-50  p-3">
-                <h5>{member.caption}</h5>
+                <h5 class='text-capitalize fw-medium'>{member.caption}</h5>
 
                 {member.subCaption && (
-                  <p>{member.subCaption}</p>
+                  <p class="text-capitalize">{member.subCaption}</p>
                 )}
 
               </div>

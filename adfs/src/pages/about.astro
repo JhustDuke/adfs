@@ -28,6 +28,7 @@ const aboutResponseBody: {
 } = await aboutRes.json();
 
 
+
 if (!aboutResponseBody?.data?.length) {
   throw new Error("about response is empty");
 }
@@ -41,9 +42,9 @@ const aboutCards = aboutResponseBody.data.map(function (item) {
   };
 });
 
-/* ================= STAFF API (NEW) ================= */
+/* ================= STAFF API ================= */
 const staffUrl: URL = new URL(
-  urlStringObj.staffsUrl,
+  urlStringObj.staffUrl,
   Astro.request.url
 );
 
@@ -56,22 +57,20 @@ if (!staffRes.ok) {
 
 const staffResponseBody = await staffRes.json();
 
-console.log("STAFF API:");
-console.dir(staffResponseBody, { depth: null });
 
-let staffMembers = [];
 
-if (staffResponseBody?.data?.length) {
-  staffMembers = staffResponseBody.data.map(function (staff) {
-    return {
-      imgSrc: staff.image_url || staff.imageSrc,
-      caption: staff.name || staff.title,
-      subCaption: staff.role || staff.subCaption || "Staff"
-    };
-  });
-} else {
+if (!Array.isArray(staffResponseBody) || !staffResponseBody.length) {
   throw new Error("staff response is empty");
 }
+
+const staffMembers = staffResponseBody.map(function (staff: any) {
+  return {
+    id: staff.id,
+    imgSrc: staff.imageUrl,
+    caption: staff.name,
+    subCaption: staff.role
+  };
+});
 ---
 
 <BaseLayout title="About Our School">
