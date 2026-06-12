@@ -1,45 +1,75 @@
 ---
-import type {galleryCardInterface} from '../interfaces'
-const { title, date, images, folderId } = Astro.props as galleryCardInterface
+import type { galleryCardInterface } from "../interfaces";
+const { id, caption, date, images } = Astro.props as galleryCardInterface;
 ---
 
-<div class="col-12 col-md-6 mb-4" id={folderId}>
+<div class="col-12 col-md-6 mb-4" id={`card-${id}`}>
   <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
-    
-    <div id={`carousel-${folderId}`} class="carousel slide" data-bs-ride="carousel">
+
+    <div
+      id={`carousel-${id}`}
+      class="carousel slide"
+      data-bs-ride="carousel"
+    >
       <div class="carousel-inner">
-        {images.map((img, index) => (
-          <div class={`carousel-item ${index === 0 ? "active" : ""}`}>
-            <div class="ratio ratio-4x3">
-              <img 
-                src={img.src} 
-                class="d-block w-100 object-fit-cover" 
-                alt={img.caption} 
-                loading="lazy"
-              />
-              <div class="carousel-caption d-block bg-dark bg-opacity-50 rounded px-2 py-1 mb-2 mx-2">
-                <p class="small m-0 text-white">{img.caption}</p>
+        {
+          images?.map(function (img, index) {
+            return (
+              <div class={`carousel-item ${index === 0 ? "active" : ""}`}>
+                <div class="ratio ratio-4x3">
+                  <img
+                    src={img.url}
+                    class="d-block w-100 object-fit-cover"
+                    alt={img.subCaption || caption}
+                    loading="lazy"
+                  />
+                  {img.subCaption && (
+                    <div class="carousel-caption d-block bg-dark bg-opacity-50 rounded px-2 py-1 mb-2 mx-2">
+                      <p class="small m-0 text-white">{img.subCaption || 'no subcaption'}</p>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+            );
+          })
+        }
       </div>
 
-      {images.length > 1 && (
-        <>
-          <button class="carousel-control-prev" type="button" data-bs-target={`#carousel-${folderId}`} data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target={`#carousel-${folderId}`} data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          </button>
-        </>
-      )}
+      {
+        images?.length > 1 && (
+          <>
+            <button
+              class="carousel-control-prev"
+              type="button"
+              data-bs-target={`#carousel-${id}`}
+              data-bs-slide="prev"
+            >
+              <span class="carousel-control-prev-icon" />
+            </button>
+            <button
+              class="carousel-control-next"
+              type="button"
+              data-bs-target={`#carousel-${id}`}
+              data-bs-slide="next"
+            >
+              <span class="carousel-control-next-icon" />
+            </button>
+          </>
+        )
+      }
     </div>
 
     <div class="card-body bg-white border-top">
-      <h3 class="h5 fw-bold mb-1 indigo-text text-darken-4">{title}</h3>
-      {date && <p class="small text-muted mb-0"><i class="bi bi-calendar3 me-1"></i> {date}</p>}
+      <h3 class="h5 fw-bold mb-1 indigo-text text-darken-4">{caption}</h3>
+      {
+        date && (
+          <p class="small text-muted mb-0">
+            <i class="bi bi-calendar3 me-1" />
+            {date}
+          </p>
+        )
+      }
     </div>
+
   </div>
 </div>

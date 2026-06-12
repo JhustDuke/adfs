@@ -1,6 +1,6 @@
 export interface galleryCardInterface {
-	title: string;
+	id: number;
+	caption: string;
 	date?: string;
-	images: { src: string; caption: string }[]; // Updated to accept objects with captions
-	folderId: string;
+	images: { url: string; subCaption: string }[];
 }

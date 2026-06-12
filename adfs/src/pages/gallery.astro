@@ -1,75 +1,50 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import GalleryCard from "../layouts/galleryCard.astro";
+import { urlStringObj } from "./urls";
 
-// Updated data: Images are now objects with captions
-const sciencePhotos = [
-  { src: "https://images.unsplash.com/photo-1530210124550-912dc1381cb8?w=800", caption: "Year 5 Chemical Reaction Lab" },
-  { src: "https://images.unsplash.com/photo-1562774053-701939374585?w=800", caption: "Studying Plant Biology" }
-];
+const galleryUrl: URL = new URL(urlStringObj.galleryUrl, Astro.request.url);
+const galleryRes: Response = await fetch(galleryUrl);
 
-const artsPhotos = [
-  { src: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800", caption: "Finger Painting Workshop" },
-  { src: "https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?w=800", caption: "Primary 2 Clay Sculpting" }
-];
+if (!galleryRes.ok) {
+  const error: { message?: string } = await galleryRes.json();
+  throw new Error(error.message || "failed to fetch gallery data");
+}
 
-const ictPhotos = [
-  { src: "/images/ictPractical/SB-Kingsley.jpg", caption: "Designing and lock-in" },
-  { src: "/images/ictPractical/SB-promise.jpg", caption: "Designing" },
-  { src: "/images/ictPractical/SB-victor.jpg", caption: "Designing" },
-  { src: "/images/ictPractical/SB-simdi.jpg", caption: "Designing" },
-  { src: "/images/ictPractical/SB-result1.jpg", caption: "outcome" },
-  { src: "/images/ictPractical/SB-result2.jpg", caption: "outcome" },
-  { src: "/images/ictPractical/SB-result3.jpg", caption: "outcome" },
-  { src: "/images/ictPractical/SB-result4.jpg", caption: "outcome" },
-  
-];
+const galleryResponseBody = await galleryRes.json();
 
-const extraPhotos = [
-  { src: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800", caption: "Inter-House Football Finals" },
-  { src: "https://images.unsplash.com/photo-1461896756913-c8b40e72c81a?w=800", caption: "Annual Track and Field Meet" }
-];
+if (!galleryResponseBody?.data?.length) {
+  throw new Error("gallery response is empty");
+}
+
+const galleryItems = galleryResponseBody.data;
 ---
 
 <BaseLayout title="School Gallery">
   <div class="container my-5">
+
     <div class="text-center mb-5">
-      <h1 class="display-4 fw-bold indigo-text text-darken-4">Memories & Milestones</h1>
-      <p class="lead grey-text text-darken-2">A glimpse into daily life at our school.</p>
+      <h1 class="display-4 fw-bold indigo-text text-darken-4">
+        Memories & Milestones
+      </h1>
+      <p class="lead grey-text text-darken-2">
+        A glimpse into daily life at our school.
+      </p>
     </div>
 
     <div class="row g-4">
-
-
-      <GalleryCard 
-      folderId="ICT" 
-      title="SPONGEBOB IN 15mins" 
-      date="June 2025" 
-      images={ictPhotos} 
-    />
-
-
-      <GalleryCard 
-        folderId="science-gallery" 
-        title="Science Lab Highlights" 
-        date="March 2026" 
-        images={sciencePhotos} 
-      />
-
-      <GalleryCard 
-        folderId="arts-gallery" 
-        title="Creative Arts Exhibition" 
-        date="February 2026" 
-        images={artsPhotos} 
-      />
-
-     
-      <GalleryCard 
-        folderId="sports-gallery" 
-        title="Sports & Extracurricular" 
-        date="December 2025" 
-        images={extraPhotos} 
-      />
+      {
+        galleryItems.map(function (folder: any) {
+          return (
+            <GalleryCard
+              id={folder.galleryDB_id}
+              caption={folder.caption}
+              date={folder.date}
+              images={folder.images}
+            />
+          );
+        })
+      }
     </div>
 
     <div class="row mt-5 pt-4 border-top">
@@ -79,5 +54,6 @@ const extraPhotos = [
         </a>
       </div>
     </div>
+
   </div>
 </BaseLayout>
