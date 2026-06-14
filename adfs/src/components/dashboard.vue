@@ -82,8 +82,7 @@
 	import { ref, computed } from "vue";
 	import NewsManager from "./newsManager/newsManager.vue";
 	import AcademicsManager from "./academicPageManager/academicManager.vue";
-	// @ts-ignore
-	import GalleryManager from "./galleryPageManager/GalleryManager.vue";
+	import GalleryManager from "./galleryPageManager/galleryManager.vue";
 	import AboutManager from "./aboutPageManager/aboutManager.vue";
 	import staffManager from "./staffManager/StaffManager.vue";
 
