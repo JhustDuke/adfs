@@ -4,3 +4,4 @@ export const imageDir = {
 	staffImagePath: "/images/staffImages",
 	galleryCollection: "/images/galleryCollections",
 };
+///somethings to do

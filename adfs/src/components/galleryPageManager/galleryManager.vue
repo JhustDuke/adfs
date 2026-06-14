@@ -98,9 +98,11 @@
 <script setup lang="ts">
 	import { onMounted, ref } from "vue";
 	import GalleryCarousel from "./GalleryCarousel.vue";
+	//renamed
 	import CreateGallery from "./CreateGalleryContent.vue";
-	import UpdateGallery from "./UpdateGalleryContent.vue";
-	import DeleteGallery from "./DeleteGalleryContent.vue";
+	// @ts-ignore
+	import UpdateGallery from "./updateGalleryContent.vue";
+	import DeleteGallery from "./deleteGalleryContent.vue";
 	import AddExisting from "./AddToExistingGallery.vue";
 
 	import { type GalleryInterface, type ImageInterface } from "./types";
