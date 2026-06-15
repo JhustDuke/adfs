@@ -1,7 +1,7 @@
 import { defineMiddleware } from "astro:middleware";
 
-export const onRequest = defineMiddleware(function (
-	{ url, request, cookies },
+export const onRequest = defineMiddleware(async function (
+	{ url, cookies, redirect },
 	next
 ) {
 	if (!url.pathname.startsWith("/dashboard")) {
@@ -17,8 +17,11 @@ export const onRequest = defineMiddleware(function (
 	if (!isValid) {
 		cookies.delete("dashboard_session", { path: "/" });
 		cookies.delete("dashboard_expiry", { path: "/" });
-		return Response.redirect(new URL("/login", request.url), 302);
+
+		return redirect("/login", 302);
 	}
 
-	return next();
+	const response = await next();
+
+	return response;
 });

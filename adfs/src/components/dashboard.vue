@@ -78,7 +78,7 @@
 	</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 	import { ref, computed } from "vue";
 	import NewsManager from "./newsManager/newsManager.vue";
 	import AcademicsManager from "./academicPageManager/academicManager.vue";
@@ -118,7 +118,7 @@
 		news: NewsManager,
 	};
 
-	const setActiveTab = function (tabId) {
+	const setActiveTab = function (tabId: any) {
 		activeTab.value = tabId;
 	};
 
@@ -126,7 +126,9 @@
  CURRENT COMPONENT
  Auto switches component based on the activeTab value
  ========================================================= */
+
 	const currentComponent = computed(function () {
+		// @ts-ignore
 		return componentMap[activeTab.value];
 	});
 
@@ -134,7 +136,7 @@
  HANDLE TAB CHANGE
  Only works for mobile screen select
  ========================================================= */
-	const handleTabChange = function (event) {
+	const handleTabChange = function (event: any) {
 		activeTab.value = event.target.value;
 	};
 
@@ -145,16 +147,17 @@
  ========================================================= */
 	const handleLogout = async function () {
 		isLoggingOut.value = true;
-
 		try {
-			await fetch("/api/auth/logout", { method: "POST" });
-		} finally {
-			/* ---------------------------------------------------
-   Redirect regardless of fetch result
-   Even if the request fails, send the user to /login
-   The middleware will block /dashboard access anyway
-   --------------------------------------------------- */
+			await fetch("/api/auth/logout", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
 			window.location.href = "/login";
+		} catch (err: any) {
+			console.log("log out error:", err.message);
+			isLoggingOut.value = false; // r
 		}
 	};
 </script>
