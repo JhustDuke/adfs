@@ -34,7 +34,7 @@ export async function createDB(): Promise<void> {
 			`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME}\``
 		);
 
-		console.log("✅ Database ready.");
+		console.log("✅Database ready.");
 	} catch (err: any) {
 		const msg =
 			err?.sqlMessage || err?.message || err?.code || "Unknown DB error";

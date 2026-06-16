@@ -68,6 +68,10 @@
 			const res = await fetch("/api/gallery/createGallery", {
 				method: "POST",
 				body: formData,
+				headers: {
+					Origin: window.location.origin,
+					"X-Requested-With": "XMLHttpRequest",
+				},
 			});
 
 			const data = await res.json();

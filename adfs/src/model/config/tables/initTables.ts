@@ -1,3 +1,4 @@
+import { createDB } from "../create-db";
 import { createNewsTable } from "./createNewsTable";
 import { createAcademicPageTable } from "./createAcademicTables";
 import { createAboutCardsTable } from "./aboutCardTable";
@@ -6,6 +7,8 @@ import { createGalleryTable, createImagesTable } from "./createGalleryTable";
 
 export const initTables = async function (): Promise<void> {
 	try {
+		await createDB();
+
 		console.log("Creating tables...");
 
 		await createNewsTable();

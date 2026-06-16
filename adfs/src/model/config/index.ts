@@ -1,2 +1,3 @@
-export * from "./create-db";
+export { appPool } from "./create-db";
+
 import "./initAll";
