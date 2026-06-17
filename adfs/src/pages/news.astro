@@ -1,97 +1,69 @@
 ---
+export const prerender = false
 import BaseLayout from "../layouts/BaseLayout.astro";
 import NewsCard from "../layouts/newsCard.astro";
-import { urlStringObj } from "./urls";
+import { allNewsModel } from "../model";
 
-const newsUrl = new URL(urlStringObj.newsUrl, Astro.request.url);
+let news: {
+  title: string;
+  date: string;
+  fullText: string;
+  excerpt: string;
+}[] = [];
 
-let news: any[] = [];
-let error: string | null = null;
+let errorMsg: string | null = null;
+let emptyMessage: string | null = null;
 
 try {
-	const res = await fetch(newsUrl);
-
-	if (res.ok) {
-		const text = await res.text();
-
-		if (text) {
-			try {
-				const data = JSON.parse(text);
-
-				if (Array.isArray(data)) {
-					news = data;
-				}
-
-				if (data?.error) {
-					error = data.error;
-				}
-			} catch (e) {
-				console.log("early return: invalid JSON");
-				error = "invalid json";
-			}
-		} else {
-			console.log("early return: empty body");
-		}
-	} else {
-		console.log("early return: bad response");
-		error = "request failed";
-	}
-} catch (e) {
-	console.log("early return: fetch failed");
-	error = "fetch failed";
+  news = await allNewsModel();
+  if (!news.length) {
+    emptyMessage = "Oops, no news to display at the moment!";
+  }
+} catch (err: any) {
+  console.error("News fetch failed:", err.message);
+		console.log('err:',err)
+  errorMsg = err?.message || "Couldn't fetch news";
 }
 ---
-
 <BaseLayout title="School News & Updates">
-	<div class="container my-5">
-
-		<div class="row mb-5 text-center">
-			<div class="col-12">
-				<h1 class="display-4 fw-bold indigo-text text-darken-4">
-					Pupil News & Notices
-				</h1>
-
-				<p class="lead grey-text text-darken-2">
-					Everything parents and pupils need to know about school life.
-				</p>
-			</div>
-		</div>
-
-		<!-- fallback: request failed or server error -->
-		{error && (
-			<div class="row">
-				<div class="col-12 text-center text-muted">
-					<p>No data to display at the moment</p>
-				</div>
-			</div>
-		)}
-
-		<!-- fallback: successful request but empty array -->
-		{!error && news.length === 0 && (
-			<div class="row">
-				<div class="col-12 text-center text-muted">
-					<p>No data to display at the moment</p>
-				</div>
-			</div>
-		)}
-
-		<!-- news data -->
-		{!error && news.length > 0 && (
-			<div class="row justify-content-center">
-				<div class="col-lg-10">
-					{news.map(function (item: any) {
-						return (
-							<NewsCard
-								title={item.title}
-								date={item.date}
-								excerpt={item.excerpt}
-								fullText={item.full_text}
-							/>
-						);
-					})}
-				</div>
-			</div>
-		)}
-
-	</div>
-</BaseLayout> 
+  <div class="container my-5">
+    <div class="row mb-5 text-center">
+      <div class="col-12">
+        <h1 class="display-4 fw-bold indigo-text text-darken-4">
+          Pupil News & Notices
+        </h1>
+        <p class="lead grey-text text-darken-2">
+          Everything parents and pupils need to know about school life.
+        </p>
+      </div>
+    </div>
+    {errorMsg && (
+      <div class="row">
+        <div class="col-12 text-center text-muted red-text">
+          <p>{errorMsg}</p>
+        </div>
+      </div>
+    )}
+    {!errorMsg && news.length === 0 && (
+      <div class="row">
+        <div class="col-12 text-center text-muted">
+          <p>{emptyMessage}</p>
+        </div>
+      </div>
+    )}
+    {!errorMsg && news.length > 0 && (
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          {news.map((item) => (
+            <NewsCard
+              title={item.title}
+              date={item.date}
+              excerpt={item.excerpt}
+              fullText={item.fullText}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</BaseLayout>
