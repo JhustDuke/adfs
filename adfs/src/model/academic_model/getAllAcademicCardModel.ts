@@ -1,20 +1,20 @@
 import { DBTableNames } from "../../utils";
 import { appPool } from "../config";
 
-interface CreateAcademicPageInputInterface {
-	caption: string;
-	excerpts: string;
-	imageBuffer: Buffer;
-	imageOriginalName: string;
-	textCaptionColor?: string | null;
-	bgColor?: string | null;
+export interface AllAcademicDataInterface {
+	id: number;
+	title: string;
+	textContent: string;
+	imageSrc: string;
+	textCaptionColor?: string | undefined;
+	bgColor?: string | undefined;
 }
 
 /**
  * GET ALL Academic CARDS
  */
 export const getAllAcademicCardsModel = async function (): Promise<
-	CreateAcademicPageInputInterface[]
+	AllAcademicDataInterface[]
 > {
 	let connection;
 
@@ -33,7 +33,7 @@ export const getAllAcademicCardsModel = async function (): Promise<
 				
 			FROM ${DBTableNames.academicTable}
 			`
-		)) as [CreateAcademicPageInputInterface[], unknown];
+		)) as [AllAcademicDataInterface[], unknown];
 
 		if (!rows || rows.length === 0) {
 			console.log("no cards in DB"); // early return log

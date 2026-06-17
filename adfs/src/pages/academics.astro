@@ -2,50 +2,25 @@
 export const prerender = false
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SubjectCard from "../layouts/subjectsCard.astro";
-import { urlStringObj } from "./urls";
+import {getAllAcademicCardsModel} from '../model'
+import type {AllAcademicDataInterface} from '../model'
 
-const url = new URL(urlStringObj.academicUrl, Astro.request.url);
 
-let academicPillars: any[] = [];
+
+let academicData:AllAcademicDataInterface[]=[]
+
+
 let error: string | null = null;
 
 try {
-	const res = await fetch(url);
+	academicData = await getAllAcademicCardsModel()
 
-	if (!res.ok) {
-		console.log("academic: bad response");
-		error = "request failed";
-	} else {
-		const text = await res.text();
-
-		if (!text) {
-			console.log("academic: empty body");
-			error = "empty response";
-		} else {
-			try {
-				const body = JSON.parse(text);
-
-				const data = body?.data;
-
-				if (Array.isArray(data) && data.length > 0) {
-					academicPillars = data;
-				} else {
-					academicPillars = [];
-				}
-
-				if (body?.error) {
-					error = body.error;
-				}
-			} catch (e) {
-				console.log("academic: invalid json");
-				error = "invalid json";
-			}
-		}
-	}
-} catch (e) {
-	console.log("academic: fetch failed");
-	error = "fetch failed";
+		} 
+		catch (err:any) {
+	console.log("academic: fetch error",err);
+	error = err.message || 'failed to fetch data'
 }
+
 ---
 
 <BaseLayout title="Academics | Our Curriculum">
@@ -62,24 +37,24 @@ try {
 
 		<!-- ERROR STATE -->
 		{error && (
-			<div class="text-center text-muted">
-				<!-- fallback: server/fetch error -->
-				No data to display at the moment
+			<div class="text-center text-muted red-text">
+				
+				{error}
 			</div>
 		)}
 
 		<!-- EMPTY STATE -->
-		{!error && academicPillars.length === 0 && (
-			<div class="text-center text-muted">
-				<!-- fallback: valid response but empty -->
+		{!error && academicData.length === 0 && (
+			<div class="text-center text-muted green-text">
+				
 				No data to display at the moment
 			</div>
 		)}
 
 		<!-- DATA -->
-		{!error && academicPillars.length > 0 && (
+		{!error && academicData.length > 0 && (
 			<div class="row">
-				{academicPillars.map(function (item) {
+				{academicData.map(function (item) {
 					return (
 						<SubjectCard
 							id={item.id}
