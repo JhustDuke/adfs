@@ -16,7 +16,7 @@ export const allNewsModel = async function (): Promise<any[]> {
 			excerpt
 			FROM ${DBTableNames.newsTable} ORDER BY date DESC`
 		);
-		console.log(rows);
+
 		return rows as any[];
 	} catch (error: any) {
 		console.log("getNews error:", error.message);

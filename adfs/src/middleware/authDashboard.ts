@@ -1,6 +1,6 @@
 import { defineMiddleware } from "astro:middleware";
 
-export const onRequest = defineMiddleware(async function (
+export const dashboardAuthMiddleware = defineMiddleware(async function (
 	{ url, cookies, redirect },
 	next
 ) {
@@ -17,11 +17,9 @@ export const onRequest = defineMiddleware(async function (
 	if (!isValid) {
 		cookies.delete("dashboard_session", { path: "/" });
 		cookies.delete("dashboard_expiry", { path: "/" });
-
 		return redirect("/login", 302);
 	}
 
 	const response = await next();
-
 	return response;
 });
