@@ -15,7 +15,7 @@ export const createAcademicPageTable = async function (): Promise<void> {
 				id
 					INT AUTO_INCREMENT PRIMARY KEY,
 				image_url
-					TEXT NOT NULL,
+					VARCHAR(255) NOT NULL,
 				caption
 					VARCHAR(255) NOT NULL UNIQUE,
 				excerpts

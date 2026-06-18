@@ -41,7 +41,7 @@ export const createGalleryTable = async function (): Promise<void> {
 					INT NOT NULL,
 
 				url 
-					TEXT NOT NULL UNIQUE,
+					VARCHAR(255) NOT NULL UNIQUE,
 
 				subcaption 
 					VARCHAR(255) DEFAULT '',
@@ -79,7 +79,7 @@ export const createImagesTable = async function (): Promise<void> {
 					INT NOT NULL,
 
 				url 
-					TEXT NOT NULL UNIQUE,
+					VARCHAR(255) NOT NULL UNIQUE,
 
 				subcaption 
 					VARCHAR(255) DEFAULT '',

@@ -14,7 +14,7 @@ export const createAboutCardsTable = async function (): Promise<void> {
 				caption 
      VARCHAR(255) NOT NULL UNIQUE,
 				image_url 
-     TEXT NOT NULL,
+		VARCHAR(255) NOT NULL,
 				text_content 
      TEXT NOT NULL,
 				created_at 
