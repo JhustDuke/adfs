@@ -2,50 +2,22 @@
 export const prerender = false
 import BaseLayout from "../layouts/BaseLayout.astro";
 import GalleryCard from "../layouts/galleryCard.astro";
-import { urlStringObj } from "./urls";
+import {getAllGalleryModel} from '../model'
+import type{AllGalleryData} from '../model'
 
-const galleryUrl = new URL(urlStringObj.galleryUrl, Astro.request.url);
 
-let galleryItems: any[] = [];
+
+let galleryData:AllGalleryData[]=[]
 let error: string | null = null;
 
 try {
-	const res = await fetch(galleryUrl);
-
-	if (!res.ok) {
-		console.log("gallery: bad response");
-		error = "request failed";
-	} else {
-		const text = await res.text();
-
-		if (!text) {
-			console.log("gallery: empty body");
-			error = "empty response";
-		} else {
-			try {
-				const body = JSON.parse(text);
-
-				const data = body?.data;
-
-				if (Array.isArray(data) && data.length > 0) {
-					galleryItems = data;
-				} else {
-					galleryItems = [];
-				}
-
-				if (body?.error) {
-					error = body.error;
-				}
-			} catch (e) {
-				console.log("gallery: invalid json");
-				error = "invalid json";
+galleryData=await getAllGalleryModel()
+	
+			} catch (err:any) {
+				
+				error = err.message || 'failed to get gallery data';
 			}
-		}
-	}
-} catch (e) {
-	console.log("gallery: fetch failed");
-	error = "fetch failed";
-}
+			 
 ---
 
 <BaseLayout title="School Gallery">
@@ -59,24 +31,23 @@ try {
 
 		<!-- fallback: error state -->
 		{error && (
-			<div class="text-center text-muted">
-				<!-- fallback: server / fetch issue -->
-				No data to display at the moment
+			<div class="text-center text-muted red-text">
+				{error}
 			</div>
 		)}
 
 		<!-- fallback: empty state -->
-		{!error && galleryItems.length === 0 && (
-			<div class="text-center text-muted">
-				<!-- fallback: valid response but no data -->
+		{!error && galleryData.length === 0 && (
+			<div class="text-center text-muted green-text">
+				
 				No data to display at the moment
 			</div>
 		)}
 
 		<!-- data -->
-		{!error && galleryItems.length > 0 && (
+		{!error && galleryData.length > 0 && (
 			<div class="row g-4">
-				{galleryItems.map(function (folder: any) {
+				{galleryData.map(function (folder: any) {
 					return (
 						<GalleryCard
 							id={folder.galleryDB_id}

@@ -1,7 +1,7 @@
 import { appPool } from "../config";
 import { DBTableNames } from "../../utils";
 
-export interface GalleryResult {
+export interface AllGalleryData {
 	galleryDB_id: number;
 	caption: string;
 	month: string;
@@ -14,7 +14,7 @@ export interface GalleryResult {
  * Fetch all galleries with images (JS hydrated)
  * DB returns flat rows, JS builds structure
  */
-export const getAllGalleryModel = async function (): Promise<GalleryResult[]> {
+export const getAllGalleryModel = async function (): Promise<AllGalleryData[]> {
 	const conn = await appPool.getConnection();
 
 	try {
@@ -41,7 +41,7 @@ export const getAllGalleryModel = async function (): Promise<GalleryResult[]> {
 		);
 
 		// 2. HYDRATION (build nested structure)
-		const galleryMap = new Map<number, GalleryResult>();
+		const galleryMap = new Map<number, AllGalleryData>();
 
 		for (let i = 0; i < rows.length; i++) {
 			const row = rows[i];
