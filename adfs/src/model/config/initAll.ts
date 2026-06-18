@@ -1,7 +1,7 @@
 import { initTables } from "./tables/initTables";
 
 ///
-(async function init() {
+export async function initAll() {
 	try {
 		console.log("database init started");
 
@@ -11,4 +11,4 @@ import { initTables } from "./tables/initTables";
 	} catch (error: unknown) {
 		console.error("Init failed:", error);
 	}
-})();
+}

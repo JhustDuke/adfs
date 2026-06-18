@@ -19,7 +19,7 @@ export const createStaffTable = async function (): Promise<void> {
 					VARCHAR(255) NOT NULL UNIQUE,
 
 				image_url
-					TEXT NOT NULL UNIQUE,
+					VARCHAR(255) NOT NULL UNIQUE,
 
 				role
 					ENUM(
