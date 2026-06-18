@@ -13,6 +13,9 @@ const conn = mysql.createPool({
 	connectionLimit: 10,
 });
 
+console.log("host", Boolean(process.env.DB_HOST));
+console.log("password", Boolean(process.env.DB_PASS));
+
 // App pool (WITH DB)
 export const appPool = mysql.createPool({
 	host: process.env.DB_HOST,
