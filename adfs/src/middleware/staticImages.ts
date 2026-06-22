@@ -28,15 +28,10 @@ export const staticImagesMiddleware = defineMiddleware(async function (
 	// fs.existsSync() looks for a file that literally has "%20" in its name
 	// and fails to find it — causing a false 404 even though the file exists.
 	const decodedPath = decodeURIComponent(url.pathname);
-	console.log("decodedPath", decodedPath);
 
 	// Resolve the decoded URL path to an actual file location on disk.
 	// process.cwd() is the project root when running the built server.
 	const filePath = path.join(process.cwd(), decodedPath);
-	console.log("raw pathname:", url.pathname);
-	console.log("decoded path:", decodedPath);
-	console.log("resolved filePath:", filePath);
-	console.log("exists?", fs.existsSync(filePath));
 
 	// Confirm the path exists AND is a file (not a folder) before reading it
 	if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {

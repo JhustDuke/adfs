@@ -121,11 +121,9 @@ async function updateCaption(params: {
 		const { conn, collectionId, current, finalCaption } = params;
 
 		const oldDir = path.join(uploadDir, current.caption);
-		const newDir = path.join(uploadDir, finalCaption);
+		const updatedDir = path.join(oldDir, "updated");
 
-		if (!fs.existsSync(oldDir)) return;
-
-		await fs.promises.cp(oldDir, newDir, { recursive: true });
+		ensureUploadDir(updatedDir);
 
 		const [images]: any = await conn.query(
 			`SELECT id, url
@@ -135,10 +133,16 @@ async function updateCaption(params: {
 		);
 
 		for (const row of images) {
-			const newUrl = row.url.replace(
-				`${imagePath}/${current.caption}`,
-				`${imagePath}/${finalCaption}`
-			);
+			const oldFilePath = path.join(process.cwd(), row.url);
+			const filename = path.basename(row.url);
+			const newFilePath = path.join(updatedDir, filename);
+
+			if (fs.existsSync(oldFilePath)) {
+				await fs.promises.copyFile(oldFilePath, newFilePath);
+				await fs.promises.unlink(oldFilePath);
+			}
+
+			const newUrl = path.join(imagePath, current.caption, "updated", filename);
 
 			await conn.query(
 				`UPDATE ${DBTableNames.collectionImages}
@@ -147,8 +151,6 @@ async function updateCaption(params: {
 				[newUrl, row.id]
 			);
 		}
-
-		await deleteFolder(oldDir);
 	} catch (err) {
 		throw new Error(`[updateCaption] ${(err as Error).message}`);
 	}

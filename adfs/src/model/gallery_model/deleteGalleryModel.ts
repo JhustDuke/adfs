@@ -1,4 +1,3 @@
-// deleteGalleryModel.ts
 import { appPool } from "../config";
 import fs from "fs";
 import path from "path";
@@ -7,62 +6,54 @@ import { imageDir, DBTableNames } from "../../utils";
 const imagePath = imageDir.galleryCollection;
 const uploadDir: string = path.join(process.cwd(), imagePath);
 
-/* ================= FOLDER DELETE HELPER ================= */
-async function deleteFolder(folderPath: string): Promise<void> {
-	if (!fs.existsSync(folderPath)) return;
-
-	const entries = await fs.promises.readdir(folderPath, {
-		withFileTypes: true,
-	});
-
-	for (const entry of entries) {
-		const entryPath = path.join(folderPath, entry.name);
-		if (entry.isDirectory()) {
-			await deleteFolder(entryPath);
-			await fs.promises.rmdir(entryPath);
-		} else {
-			await fs.promises.unlink(entryPath);
-		}
-	}
-
-	await fs.promises.rmdir(folderPath);
-}
-
 /* ================= DELETE ENTIRE GALLERY ================= */
 export const deleteGalleryModel = async function (
 	collectionId: number
 ): Promise<void> {
 	const conn = await appPool.getConnection();
+
 	try {
 		await conn.beginTransaction();
 
 		// 1. Confirm collection exists and grab caption for folder path
 		const [rows]: any = await conn.query(
 			`SELECT id, caption FROM ${DBTableNames.galleryCollections}
-       WHERE id = ?`,
+			 WHERE id = ?`,
 			[collectionId]
 		);
+
 		if (!rows.length) throw new Error("Gallery collection not found");
 
 		const caption: string = rows[0].caption;
 
-		// 2. Delete child rows (CASCADE handles this too but being explicit)
+		// 2. Grab all image URLs before deleting rows
+		const [images]: any = await conn.query(
+			`SELECT url FROM ${DBTableNames.collectionImages}
+			 WHERE collection_id = ?`,
+			[collectionId]
+		);
+
+		// 3. Delete child rows
 		await conn.query(
 			`DELETE FROM ${DBTableNames.collectionImages}
-       WHERE collection_id = ?`,
+			 WHERE collection_id = ?`,
 			[collectionId]
 		);
 
-		// 3. Delete parent row
+		// 4. Delete parent row
 		await conn.query(
 			`DELETE FROM ${DBTableNames.galleryCollections}
-       WHERE id = ?`,
+			 WHERE id = ?`,
 			[collectionId]
 		);
 
-		// 4. Delete folder from disk
-		const collectionDir = path.join(uploadDir, caption);
-		await deleteFolder(collectionDir);
+		// 5. Delete image files individually, leave folders alone
+		for (const img of images) {
+			const filePath = path.join(process.cwd(), img.url);
+			if (fs.existsSync(filePath)) {
+				await fs.promises.unlink(filePath);
+			}
+		}
 
 		await conn.commit();
 	} catch (err) {
@@ -79,21 +70,23 @@ export const deleteGalleryImageModel = async function (
 	imageUrl: string
 ): Promise<void> {
 	const conn = await appPool.getConnection();
+
 	try {
 		await conn.beginTransaction();
 
 		// 1. Confirm image exists in this collection
 		const [rows]: any = await conn.query(
 			`SELECT id FROM ${DBTableNames.collectionImages}
-       WHERE collection_id = ? AND url = ?`,
+			 WHERE collection_id = ? AND url = ?`,
 			[collectionId, imageUrl]
 		);
+
 		if (!rows.length) throw new Error("Image not found in this collection");
 
 		// 2. Delete DB row
 		await conn.query(
 			`DELETE FROM ${DBTableNames.collectionImages}
-       WHERE collection_id = ? AND url = ?`,
+			 WHERE collection_id = ? AND url = ?`,
 			[collectionId, imageUrl]
 		);
 

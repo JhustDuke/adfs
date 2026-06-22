@@ -6,7 +6,7 @@ export async function initAll() {
 	try {
 		console.log("database init started");
 
-		await dropAllTables();
+		//await dropAllTables();
 		await initTables();
 
 		console.log("Init complete");
