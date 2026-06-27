@@ -1,11 +1,28 @@
 <template>
-	<div class="modal-overlay">
+	<!-- modal container -->
+	<div
+		class="isAbsolute d-flex justify-content-center align-items-center w-100"
+		style="inline-size: 0; z-index: 9999; top: 0">
+		<!-- backdrop -->
 		<div
-			class="modal-backdrop"
+			class="grey lighten-3"
+			style="position: absolute; inset: 0"
 			@click="emit('close')"></div>
-		<div class="modal-box">
+
+		<!-- modal-->
+		<div
+			class="isRelative d-flex flex-column p-1 gap-1"
+			style="
+				width: 92%;
+				max-width: 500px;
+				border-radius: 10px;
+				background: #fff;
+				max-height: 90vh;
+				overflow: hidden;
+				z-index: 10000;
+			">
 			<!-- HEADER -->
-			<div class="modal-header">
+			<div class="mod-header d-flex justify-content-between align-items-center">
 				<h5 class="m-0">Preview Staff</h5>
 				<button
 					class="btn-close"
@@ -13,12 +30,13 @@
 			</div>
 
 			<!-- BODY -->
-			<div class="modal-body">
+			<div style="overflow-y: auto; max-height: 60vh; padding-right: 5px">
 				<!-- IMAGE -->
 				<img
 					v-if="staff.imageUrl"
 					:src="staff.imageUrl"
-					class="preview-img mb-3" />
+					class="mb-3 d-block w-100"
+					style="max-height: 220px; object-fit: cover; border-radius: 8px" />
 
 				<!-- NAME -->
 				<div class="mb-2">
@@ -82,49 +100,4 @@
 	}>();
 </script>
 
-<style scoped>
-	.modal-overlay {
-		position: fixed;
-		inset: 0;
-		z-index: 9999;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.modal-backdrop {
-		position: absolute;
-		inset: 0;
-		background: rgba(0, 0, 0, 0.5);
-	}
-	.modal-box {
-		position: relative;
-		background: #fff;
-		width: 92%;
-		max-width: 500px;
-		border-radius: 10px;
-		padding: 1.5rem;
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		max-height: 90vh;
-		overflow: hidden;
-		z-index: 10000;
-	}
-	.modal-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-	.modal-body {
-		overflow-y: auto;
-		max-height: 60vh;
-		padding-right: 5px;
-	}
-	.preview-img {
-		width: 100%;
-		max-height: 220px;
-		object-fit: cover;
-		border-radius: 8px;
-		display: block;
-	}
-</style>
+<style scoped></style>

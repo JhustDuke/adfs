@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="isRelative">
 		<div class="row g-3 mb-3">
 			<div class="col-12">
 				<div class="p-3 shadow-sm border-0">

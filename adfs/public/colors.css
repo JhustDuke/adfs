@@ -1,8 +1,8 @@
 .isRelative {
-	position: relative;
+	position: relative !important;
 }
 .isAbsolute {
-	position: absolute;
+	position: absolute !important;
 }
 .isFixed {
 	position: fixed;
