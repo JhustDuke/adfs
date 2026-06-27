@@ -1,5 +1,5 @@
 <template>
-	<div class="card shadow-sm border-0 p-3">
+	<div class="card shadow-sm border-0 p-3 isRelative">
 		<!-- HEADER -->
 		<div class="d-flex justify-content-between align-items-center mb-3">
 			<h5 class="blue-text text-darken-3 mb-0">Create About Card</h5>
