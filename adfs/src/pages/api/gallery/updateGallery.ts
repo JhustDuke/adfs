@@ -9,7 +9,8 @@ interface UpdateImagePayload {
 }
 
 const allowedSize = 2 * 1024 * 1024; // 2MB
-const MIN_IMAGES = 3;
+//update requires at most 1 image
+const MIN_IMAGES = 1;
 const MAX_IMAGES = 5;
 
 export const PATCH: APIRoute = async function ({ request }) {

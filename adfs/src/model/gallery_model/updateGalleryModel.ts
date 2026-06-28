@@ -19,6 +19,15 @@ interface UpdateGalleryPayload {
 	year?: number;
 	images?: UpdateImagePayload[];
 }
+/**
+ * what does updateGalleryModel do?
+ * from update gallery  i can update
+ * the gallery caption
+ * change image caption
+ * add new images to the gallery
+ * ########################### n,
+ *
+ */
 
 /* ================= MAIN MODEL ================= */
 export const updateGalleryModel = async function (
