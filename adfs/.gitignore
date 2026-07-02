@@ -4,6 +4,9 @@ dist.zip
 # generated types
 .astro/
 
+images/
+images/**
+
 .vscode
 
 # dependencies
