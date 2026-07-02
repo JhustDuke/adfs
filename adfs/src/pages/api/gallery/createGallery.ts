@@ -3,7 +3,7 @@ import type { APIRoute } from "astro";
 import { createGalleryModel } from "../../../model";
 
 const allowedSize = 2 * 1024 * 1024; // 2MB
-const MIN_IMAGES = 3;
+const MIN_IMAGES = 1;
 const MAX_IMAGES = 5;
 
 export const POST: APIRoute = async function ({ request }) {

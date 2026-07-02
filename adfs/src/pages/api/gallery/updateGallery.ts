@@ -58,7 +58,13 @@ export const PATCH: APIRoute = async function ({ request }) {
 			);
 		}
 
-		await updateGalleryModel({ collectionId, caption, month, year, images });
+		await updateGalleryModel({
+			collectionId,
+			newCaption: caption,
+			newMonth: month,
+			newYear: year,
+			newImages: images,
+		});
 
 		return new Response(
 			JSON.stringify({ message: "Gallery updated successfully" }),
