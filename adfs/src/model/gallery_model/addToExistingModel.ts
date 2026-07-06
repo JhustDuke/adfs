@@ -18,71 +18,144 @@ interface AddToExistingGalleryPayload {
 	images: AddImagePayload[];
 }
 
+/* ================= MAIN MODEL ================= */
 export const addToExistingGalleryModel = async function (
 	payload: AddToExistingGalleryPayload
 ): Promise<void> {
 	const { collectionId, images } = payload;
 
+	if (!images.length) {
+		throw new Error("no images provided");
+	}
+
 	const conn = await appPool.getConnection();
+	await conn.beginTransaction();
+
+	//tracks fs side-effects so we can undo them if the db transaction rolls back
+	const writtenFilePaths: string[] = [];
+
 	try {
-		await conn.beginTransaction();
+		const collectionCaption = await getCollectionCaption(conn, collectionId);
 
-		// 1. Confirm collection exists and grab caption for folder path
-		const [rows]: any = await conn.query(
-			`SELECT id, caption FROM ${DBTableNames.galleryCollections}
-       WHERE id = ?`,
-			[collectionId]
+		//currentFolderId =1 or whatever
+		const currentFolderId = String(collectionId);
+		const currentFolderName = collectionCaption + "-images";
+
+		//currentFolderPath=c://system32...images/galleryCollections/1/sports-images
+		const currentFolderPath = path.join(
+			uploadDir,
+			currentFolderId,
+			currentFolderName
 		);
-		if (!rows.length) throw new Error("Gallery collection not found");
+		ensureUploadDir(currentFolderPath);
 
-		const caption: string = rows[0].caption;
+		//relativeImagePath=images/galleryCollection/1/sports-images
+		const relativeImagePath = `${imagePath}/${currentFolderId}/${currentFolderName}`;
 
-		// 2. Build folder path from existing caption
-		const collectionDir = path.join(uploadDir, caption);
-		const imagesDir = path.join(collectionDir, `${caption}images`);
-		ensureUploadDir(collectionDir);
-		ensureUploadDir(imagesDir);
+		await validateNoFilenameCollisions(conn, collectionId, images);
 
-		// 3. Build incoming URLs and check for duplicates
-		const incomingUrls = images.map((img) =>
-			path.join(imagePath, caption, `${caption}-images`, img.filename)
-		);
-
-		const [existing]: any = await conn.query(
-			`SELECT url FROM ${DBTableNames.collectionImages}
-       WHERE url IN (?)`,
-			[incomingUrls]
-		);
-
-		if (existing.length > 0) {
-			const dupes = existing.map((row: any) => row.url).join(", ");
-			throw new Error(`Image(s) already exist: ${dupes}`);
+		for (const image of images) {
+			const filePath = await writeNewImage(
+				conn,
+				collectionId,
+				currentFolderPath,
+				relativeImagePath,
+				image
+			);
+			writtenFilePaths.push(filePath);
 		}
-
-		// 4. Write new files to disk
-		for (const img of images) {
-			const destPath = path.join(imagesDir, img.filename);
-			await fs.promises.writeFile(destPath, img.buffer);
-		}
-
-		// 5. Batch insert new child rows
-		const childRows = incomingUrls.map((url, i) => [
-			collectionId,
-			url,
-			images[i].subcaption ?? "",
-		]);
-
-		await conn.query(
-			`INSERT INTO ${DBTableNames.collectionImages} (collection_id, url, subcaption)
-       VALUES ?`,
-			[childRows]
-		);
 
 		await conn.commit();
-	} catch (err) {
+	} catch (err: any) {
 		await conn.rollback();
-		throw err;
+		await revertWrittenFiles(writtenFilePaths);
+
+		throw new Error(err.message || "failed to add images to gallery");
 	} finally {
 		conn.release();
+	}
+};
+
+/* ================= HELPERS ================= */
+
+const getCollectionCaption = async function (conn: any, collectionId: number) {
+	const [rows]: any = await conn.query(
+		`SELECT id, caption FROM ${DBTableNames.galleryCollections}
+		 WHERE id = ?`,
+		[collectionId]
+	);
+
+	if (!rows.length) throw new Error("Gallery collection not found");
+
+	return rows[0].caption;
+};
+
+const validateNoFilenameCollisions = async function (
+	conn: any,
+	collectionId: number,
+	images: AddImagePayload[]
+) {
+	const existingImages = await getImagesForCollection(conn, collectionId);
+	const existingFilenames = getFilenameSet(existingImages);
+
+	for (const image of images) {
+		if (existingFilenames.has(image.filename)) {
+			throw new Error(
+				`image "${image.filename}" already exists in this gallery`
+			);
+		}
+	}
+};
+
+const getImagesForCollection = async function (
+	conn: any,
+	collectionId: number
+) {
+	const [rows]: any = await conn.query(
+		`SELECT id, url
+		 FROM ${DBTableNames.collectionImages}
+		 WHERE collection_id = ?`,
+		[collectionId]
+	);
+	return rows;
+};
+
+const getFilenameSet = function (images: any[]) {
+	const filenames = new Set<string>();
+	for (let img of images) {
+		filenames.add(path.basename(img.url));
+	}
+	return filenames;
+};
+
+const writeNewImage = async function (
+	conn: any,
+	collectionId: number,
+	folderPath: string,
+	relativeImagePath: string,
+	image: AddImagePayload
+) {
+	const filePath = path.join(folderPath, image.filename);
+	await fs.promises.writeFile(filePath, image.buffer);
+
+	const url = `${relativeImagePath}/${image.filename}`;
+
+	await conn.query(
+		`INSERT INTO ${DBTableNames.collectionImages} (collection_id, url, subcaption)
+		 VALUES (?, ?, ?)`,
+		[collectionId, url, image.subcaption ?? null]
+	);
+
+	return filePath;
+};
+
+const revertWrittenFiles = async function (filePaths: string[]) {
+	for (const filePath of filePaths) {
+		try {
+			await fs.promises.unlink(filePath);
+		} catch (err) {
+			//if cleanup itself fails, log it — don't let it mask the original error
+			console.error(`failed to revert file: ${filePath}`, err);
+		}
 	}
 };

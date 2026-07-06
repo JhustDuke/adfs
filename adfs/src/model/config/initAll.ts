@@ -10,7 +10,7 @@ export async function initAll() {
 		await initTables();
 
 		console.log("Init complete");
-	} catch (error: unknown) {
-		console.error("Init failed:", error);
+	} catch (error: any) {
+		console.error(error.message || "failed to init database");
 	}
 }

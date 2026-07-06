@@ -61,7 +61,8 @@ export const createGalleryModel = async function (
 		await insertImageRows(conn, collectionId, incomingUrls, images);
 
 		await conn.commit();
-	} catch (err) {
+	} catch (err: any) {
+		console.log(err.message);
 		// roll back DB changes first
 		await conn?.rollback();
 		// if folders were created before the failure, remove them from disk
