@@ -4,70 +4,72 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import GalleryCard from "../layouts/galleryCard.astro";
 import {getAllGalleryModel} from '../model'
 import type{AllGalleryData} from '../model'
-
-
-
 let galleryData:AllGalleryData[]=[]
 let error: string | null = null;
-
 try {
 galleryData=await getAllGalleryModel()
-	
-			} catch (err:any) {
-				
-				error = err.message || 'failed to get gallery data';
-			}
-			 
+ 
+   } catch (err:any) {
+    
+    error = err.message || 'failed to get gallery data';
+   }
+    
 ---
-
 <BaseLayout title="School Gallery">
-	<div class="container my-5">
+ <div class="container my-5">
+  <div class="text-center mb-5">
+   <h1 class="display-4 fw-bold indigo-text text-darken-4">
+    Memories & Milestones
+   </h1>
+  </div>
+  <!-- fallback: error state -->
+  {error && (
+   <div class="text-center text-muted red-text">
+    {error}
+   </div>
+  )}
+  <!-- fallback: empty state -->
+  {!error && galleryData.length === 0 && (
+   <div class="text-center text-muted green-text">
+    
+    No data to display at the moment
+   </div>
+  )}
+  <!-- data -->
+  {!error && galleryData.length > 0 && (
+   <div class="row g-4">
+    {galleryData.map(function (folder: any) {
+     return (
+      <GalleryCard
+       id={folder.galleryDB_id}
+       caption={folder.caption}
+       date={folder.date}
+       images={folder.images}
+      />
+     );
+    })}
+   </div>
+  )}
 
-		<div class="text-center mb-5">
-			<h1 class="display-4 fw-bold indigo-text text-darken-4">
-				Memories & Milestones
-			</h1>
-		</div>
 
-		<!-- fallback: error state -->
-		{error && (
-			<div class="text-center text-muted red-text">
-				{error}
-			</div>
-		)}
-
-		<!-- fallback: empty state -->
-		{!error && galleryData.length === 0 && (
-			<div class="text-center text-muted green-text">
-				
-				No data to display at the moment
-			</div>
-		)}
-
-		<!-- data -->
-		{!error && galleryData.length > 0 && (
-			<div class="row g-4">
-				{galleryData.map(function (folder: any) {
-					return (
-						<GalleryCard
-							id={folder.galleryDB_id}
-							caption={folder.caption}
-							date={folder.date}
-							images={folder.images}
-						/>
-					);
-				})}
-			</div>
-		)}
-
-		<!-- back button always visible -->
-		<div class="row mt-5 pt-4 border-top">
-			<div class="col-12 text-center">
-				<a href="/academics" class="btn btn-outline-primary rounded-pill px-4">
-					Back
-				</a>
-			</div>
-		</div>
-
-	</div>
+  <!-- watch our videos / facebook cta -->
+  <div class="row mt-5">
+   <div class="col-12 text-center">
+    <p class="fs-5 mb-0">
+     Watch our videos! Visit our
+     <a href="https://web.facebook.com/profile.php?id=100086788545140&sk=photos" target="_blank" rel="noopener noreferrer">
+      Facebook page
+     </a>
+    </p>
+   </div>
+  </div>
+  <!-- back button always visible -->
+  <div class="row mt-5 pt-4 border-top">
+   <div class="col-12 text-center">
+    <a href="/academics" class="btn btn-outline-primary rounded-pill px-4">
+     Back
+    </a>
+   </div>
+  </div>
+ </div>
 </BaseLayout>

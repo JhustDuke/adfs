@@ -3,11 +3,13 @@ import { createAcademicPageTable } from "./createAcademicTables";
 import { createAboutCardsTable } from "./aboutCardTable";
 import { createStaffTable } from "./createStaffTable";
 import { createGalleryTable, createImagesTable } from "./createGalleryTable";
+import { createAnalyticsTable } from "./analyticsTable";
 
 export const initTables = async function (): Promise<void> {
 	try {
 		console.log("Creating tables...");
 
+		await createAnalyticsTable();
 		await createNewsTable();
 		await createAcademicPageTable();
 		await createAboutCardsTable();

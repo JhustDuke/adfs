@@ -5,4 +5,5 @@ export const DBTableNames = {
 	staffTable: "staff_table",
 	galleryCollections: "gallery_table",
 	collectionImages: "gallery_photos",
+	analytics: "analytics_table",
 };

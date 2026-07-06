@@ -73,6 +73,7 @@
 						</keep-alive>
 					</center>
 				</div>
+				<analytics />
 			</main>
 		</div>
 	</div>
@@ -85,6 +86,7 @@
 	import GalleryManager from "./galleryPageManager/galleryManager.vue";
 	import AboutManager from "./aboutPageManager/aboutManager.vue";
 	import staffManager from "./staffManager/StaffManager.vue";
+	import Analytics from "./analytics.vue";
 
 	const tabs = [
 		{ id: "academics", label: "Academic Page" },

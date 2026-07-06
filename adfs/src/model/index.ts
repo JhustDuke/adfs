@@ -28,3 +28,7 @@ export * from "./gallery_model/updateGalleryModel";
 export * from "./gallery_model/getAllGalleryModel";
 export * from "./gallery_model/addToExistingModel";
 export * from "./gallery_model/deleteGalleryModel";
+
+//analystics
+export * from "./analystics/createAnalysticsModel";
+export * from "./analystics/getAnalysticModel";
